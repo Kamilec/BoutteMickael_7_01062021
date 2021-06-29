@@ -1,0 +1,204 @@
+/* ****************** REGISTER ******************** */
+* {
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(-225deg, #9e9e9e 0%, #bdbdbd 100%);
+  background: linear-gradient(to top, #9e9e9e 0%, #bdbdbd 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  opacity: 0.95;
+  margin: 2%;
+  font-family: 'roboto-regular', sans-serif;
+  text-align: center;
+  max-width: 1440px;
+  margin: auto;
+  padding: 1px 15px;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+form {
+  width: 300px;
+  min-height: 500px;
+  height: auto;
+  border-radius: 5px;
+  margin: 2% auto;
+  box-shadow: 0 9px 50px hsl(20deg 67% 75% / 31%);
+  padding: 2%;
+  background-image: linear-gradient(-225deg, #ec407a 50%, #42a5f5 50%);
+  margin-top: 200px;
+}
+
+.form-control {
+  margin: 0px;
+  width: 350px;
+  max-width: 100%;
+}
+
+form .con {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+
+header p {
+  letter-spacing: 0.05em;
+}
+
+.input-item {
+  background: #fff;
+  color: #333;
+  padding: 16px 1px 17px 9px;
+  border-radius: 5px 0px 0px 5px;
+}
+
+#eye {
+  background: #fff;
+  color: #333;
+  margin: 5.9px 0 0 0;
+  margin-left: -20px;
+  padding: 15px 9px 19px 0px;
+  border-radius: 0px 5px 5px 0px;
+  float: right;
+  position: relative;
+  right: 1%;
+  top: -0.2%;
+  z-index: 5;
+  cursor: pointer;
+}
+
+input[class='form-input'] {
+  width: 250px;
+  height: 50px;
+  margin-top: 2%;
+  padding: 15px;
+  font-size: 16px;
+  font-family: 'Abel', sans-serif;
+  color: #5e6472;
+  outline: none;
+  border: none;
+
+  border-radius: 0px 5px 5px 0px;
+  transition: 0.2s linear;
+}
+
+input:focus {
+  transform: translateX(-2px);
+  border-radius: 5px;
+}
+
+button {
+  display: inline-block;
+  color: #252537;
+  width: 190px;
+  height: 40px;
+  padding: 0 20px;
+  background: #fff;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s linear;
+  margin: 7% auto;
+  letter-spacing: 0.05em;
+}
+
+.frgt-pass {
+  background: transparent;
+}
+
+button:hover {
+  transform: translatey(3px);
+  box-shadow: none;
+}
+
+button:hover {
+  animation: ani9 0.4s ease-in-out infinite alternate;
+}
+@keyframes ani9 {
+  0% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(5px);
+  }
+}
+
+/* ****************** INDEX ******************** */
+.header-buttons {
+  margin-top: -70px;
+}
+.formatImg {
+  height: 270px;
+  margin-bottom: -53px;
+  margin-top: -100px;
+}
+/* ****************** PUBLICATION ******************** */
+.groupPublication {
+  flex-direction: column-reverse;
+  display: flex;
+  column-gap: 2rem;
+  grid-template-columns: 6fr 3fr;
+  margin-top: 60px;
+  justify-content: center;
+}
+
+.publication {
+  border-radius: 1.5rem;
+  padding: 10px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.userInfo {
+  background-image: linear-gradient(-225deg, #ec407a 50%, #42a5f5 50%);
+  border-radius: 1.5rem;
+  padding: 10px;
+  margin-bottom: 30px;
+}
+
+.publie-container,
+.user-container {
+  margin-top: 60px;
+  background-image: linear-gradient(-225deg, #ec407a 50%, #42a5f5 50%);
+  border-radius: 1.5rem;
+  padding: 10px;
+  margin-bottom: 30px;
+}
+
+.picProfil {
+  background-image: linear-gradient(-225deg, #EC407A 50%, #42A5F5 50%);
+  object-fit: cover;
+  max-width: 100%;
+  width: 60px;
+}
+
+.picPubli {
+  max-width: 100%;
+}
+
+/* ****************** HEADER ******************** */
+nav {
+  border-bottom: thin solid black;
+}
+
+/* ****************** FOOTER ******************** */
+footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
