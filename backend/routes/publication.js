@@ -7,7 +7,7 @@ const publicationCtrl = require('../controllers/publication');
 const multer = require('../middleware/multer-config'); //Appel du middleware pour la gestion des images
 
 //Liage des routes aux controllers
-router.post('/', auth, multer, publicationCtrl.createPublication); //Création d'une publication
+router.post('/', publicationCtrl.createPublication); //Création d'une publication
 router.put('/:id', auth, multer, publicationCtrl.modifyPublication); //Modification d'une publication existante
 router.delete('/:id', auth, publicationCtrl.deletePublication); //Suppression d'une publication
 router.get('/:id', auth, publicationCtrl.getOnePublication); //Récupération d'une seule publication

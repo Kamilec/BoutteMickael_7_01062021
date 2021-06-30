@@ -3,7 +3,8 @@ const fs = require('fs');
 
 //Création d'une publication
 exports.createPublication = (req, res, next) => {
-  const publicationObject = JSON.parse(req.body.publication); //extraction objet JSON
+  const publicationObject = req.body.publication; //extraction objet JSON
+  console.log(publicationObject);
   publicationObject.likes = 0;
   publicationObject.dislikes = 0;
   const publication = new Publication({
