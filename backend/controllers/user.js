@@ -18,15 +18,15 @@ exports.signup = (req, res, next) => {
   bcrypt
     .hash(req.body.password, 10) //Hashage du mot de passe et salage 10 fois
     .then((hash) => {
-      const user = new User({
-        email: MaskData.maskEmail2(req.body.email, emailMask2Options), //l'email masqué
+      const user = {
+        email: MaskData.maskEmail2(req.body.email, emailMask2Options), //Email masqué
         password: hash, //Mot de passe crypté
-        username: req.body.username
-      });
-      console.log('user:' + user);
-      user
-        .save() //Sauvegarde du nouvel utilisateur dans la bdd
-        .then(() => res.status(201).json({ message: 'User created !' }))
+        username: req.body.username,
+        imageUrl: req.body.filename,
+      };
+      User.create(user)
+        // .save() //Sauvegarde du nouvel utilisateur dans la bdd
+        .then(() => res.status(201).json({ message: "User created !" }))
         .catch((error) => res.status(400).json({ error }));
     })
     .catch((error) => res.status(500).json({ error }));

@@ -1,5 +1,5 @@
 const express = require('express'); //Importation du framewrok express pour node.js
-const bodyParser = require('body-parser'); 
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose'); //Importation mongoose qui permet la création de modèle pour mongoDb
 const userRoutes = require('./routes/user'); //Importation du routeur pour les utilisateurs
 const publicationRoutes = require('./routes/publication'); //Importation du routeur pour les publication
@@ -20,25 +20,37 @@ app.use(helmet.permittedCrossDomainPolicies()); // Indique à certains clients (
 app.use(helmet.referrerPolicy()); // Définit l'en-tête Referrer-Policy qui contrôle les informations définies dans l'en-tête Referer.
 app.use(helmet.xssFilter()); // Désactive le filtre de script intersite bogué des navigateurs en définissant l'en-tête X-XSS-Protection sur 0.
 
+//Module indépendant qui charge les variables d'environnement
 require('dotenv').config();
 
-//Connexion de l'API à la base de données mongoDB grâce à mongoose
+/*//Connexion de l'API à la base de données mongoDB grâce à mongoose
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.dj3s6.mongodb.net/${process.env.DB_DATA_BASE}`,
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
   )
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
-  
+  .catch(() => console.log('Connexion à MongoDB échouée !'));*/
+
+//Connexion à la base de données MySql
+const db = require('./models');
+db.sequelize.sync({ force: true }).then(() => {
+  console.log('Drop and re-sync db.');
+});
+
 //Middleware permettant d'accéder à l'API depuis n'importe quelle origine
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); //Indication que les ressources peuvent être partagées depuis n'importe quelle origine
-  res.setHeader('Access-Control-Allow-Headers','Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); //Indication que les en-têtes seront utilisées après la pré-vérification cross-origin 
-  res.setHeader('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, PATCH, OPTIONS'); //Indication des méthodes autorisées pour les requêtes HTTP
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
+  ); //Indication que les en-têtes seront utilisées après la pré-vérification cross-origin
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+  ); //Indication des méthodes autorisées pour les requêtes HTTP
   next();
 });
-
 
 app.use(bodyParser.json()); //Middleware qui permet de parser les requêtes par le client, on peut y accèder grâce à req.body
 
