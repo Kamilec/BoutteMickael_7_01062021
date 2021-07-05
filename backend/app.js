@@ -1,6 +1,5 @@
 const express = require('express'); //Importation du framewrok express pour node.js
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose'); //Importation mongoose qui permet la création de modèle pour mongoDb
 const userRoutes = require('./routes/user'); //Importation du routeur pour les utilisateurs
 const publicationRoutes = require('./routes/publication'); //Importation du routeur pour les publication
 const path = require('path'); //Accès aux chemins des fichiers
@@ -22,15 +21,6 @@ app.use(helmet.xssFilter()); // Désactive le filtre de script intersite bogué 
 
 //Module indépendant qui charge les variables d'environnement
 require('dotenv').config();
-
-/*//Connexion de l'API à la base de données mongoDB grâce à mongoose
-mongoose
-  .connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_CLUSTER}.dj3s6.mongodb.net/${process.env.DB_DATA_BASE}`,
-    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
-  )
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));*/
 
 //Connexion à la base de données MySql
 const db = require('./models');

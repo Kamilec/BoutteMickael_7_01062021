@@ -1,5 +1,5 @@
 //Création d'un schéma de données grâce à mongoose avec les propriétés désirées
-const mongoose = require('mongoose');
+/*const mongoose = require('mongoose');
 
 const publicationSchema = mongoose.Schema({
   username: { type: String, required: true },
@@ -13,4 +13,4 @@ const publicationSchema = mongoose.Schema({
 });
 
 //Exportation en tant que modèle
-module.exports = mongoose.model('Publication', publicationSchema);
+module.exports = mongoose.model('Publication', publicationSchema);*/
