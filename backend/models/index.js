@@ -1,8 +1,8 @@
 const dbConfig = require('../config/db.config.js');
-
 const Sequelize = require('sequelize');
+
 const sequelize = new Sequelize({
-  username: dbConfig.USER,
+  pseudo: dbConfig.USER,
   database: dbConfig.DB,
   password: dbConfig.PASSWORD,
   host: dbConfig.HOST,
@@ -15,12 +15,12 @@ const sequelize = new Sequelize({
     idle: dbConfig.pool.idle,
   },
 });
-const db = {};
 
+const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-
 db.users = require('./User.js')(sequelize, Sequelize);
+db.post = require('./posts.js')(sequelize, Sequelize);
+db.comments = require('./Comments.js')(sequelize, Sequelize);
 
 module.exports = db;
-

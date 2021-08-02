@@ -6,13 +6,16 @@ module.exports = (req, res, next) => {
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); //Décryptage token grâce à la clé secrète
     const userId = decodedToken.userId;
     if (req.body.userId && req.body.userId !== userId) {
-      throw 'Invalid user ID'; //Renvoie une erreur si l'id décodée de la requête ne correspond pas l'id de l'utilisateur
+      throw 'Echec de l\'hautentification'; //Renvoie une erreur si l'id décodée de la requête ne correspond pas l'id de l'utilisateur
     } else {
+       console.log();
+       console.log('Authentification réussie');
+       console.log();
       next(); //Authentification réussie et la suite du code peut s'exécuter
     }
   } catch {
     res.status(401).json({
-      error: new Error('Invalid request!'),
+      error: new Error('Autenthification impossible!'),
     });
   }
 };

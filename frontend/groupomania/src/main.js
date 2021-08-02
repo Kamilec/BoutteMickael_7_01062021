@@ -1,5 +1,12 @@
-import { createApp } from 'vue'
-import footer from './components/footer';
-import App from './App.vue'
+// Fichier pivot faisant le lien entre Vue, modèles et composants
 
-createApp(App).mount('#app')
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import 'axios';
+
+createApp(App)
+  .use(router)
+  .use(store)
+  .mount('#app');

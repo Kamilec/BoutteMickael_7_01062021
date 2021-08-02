@@ -1,13 +1,19 @@
+<!-- Fichier principal de l'qpplication Vue.-->
 <template>
-  <img class="formatImg" src="./assets/logoGMW.png" alt="" />
-  <form>
-    <button class="log-in">Login</button>
-    <button class="btn submits sign-up">Sign Up</button>
-  </form>
+  <div id="app">
+    <headfoot />
+    <router-view />
+  </div>
 </template>
 
 <script>
-  export default {};
+import Headfoot from './components/Headfoot.vue'
+  export default {
+    name: "App",
+    components : {
+      Headfoot
+    }
+  };
 </script>
 
 <style>
@@ -43,13 +49,13 @@
     color: white;
   }
 
-  .formatImg {
+  .logoGM {
     height: 270px;
-    margin-bottom: -53px;
-    margin-top: -100px;
+    position: relative;
+    bottom: 150px;
   }
 
-  form {
+  /*form {
     width: 300px;
     min-height: 500px;
     height: auto;
@@ -59,7 +65,7 @@
     padding: 2%;
     background-image: linear-gradient(-225deg, #d15159 50%, #142543 50%);
     margin-top: 53px;
-  }
+  }*/
 
   .form-control {
     margin: 0px;
@@ -103,7 +109,7 @@
     cursor: pointer;
   }
 
-  input[class='form-input'] {
+  input[class='form-row__input'] {
     width: 250px;
     height: 50px;
     margin-top: 2%;
@@ -139,7 +145,7 @@
     transition: all 0.2s linear;
     margin: 7% auto;
     letter-spacing: 0.05em;
-    margin-top: 100px;
+    margin-top: 10px;
   }
 
   .frgt-pass {
@@ -163,13 +169,38 @@
     }
   }
 
+  .card__action {
+    color: white;
+    text-decoration: underline;
+  }
+
+  .card__title {
+    color: white;
+  }
+
+  .card__action:hover {
+    cursor: pointer;
+  }
+  .button:hover {
+    cursor: pointer;
+    background: #d15159;
+  }
+  .button--disabled {
+    background: #cecece;
+    color: #ececec;
+  }
+  .button--disabled:hover {
+    cursor: not-allowed;
+    background: #cecece;
+  }
+
   footer {
     color: white;
     position: absolute;
     width: 100%;
     bottom: 0;
     left: 0;
-    right: 0;
+    margin-bottom: 10px;
     text-align: center;
   }
 </style>
