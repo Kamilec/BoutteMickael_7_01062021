@@ -1,13 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const commentCtrl = require('../controllers/comments');
-const auth = require('../middleware/auth');
+module.exports = (app) => {
+  var router = require('express').Router(); //Chargement du middleware niveau router
+  const multer = require('../middleware/multer-config');
+  const comments = require('../controllers/comments');
+  const auth = require('../middleware/auth'); //Appel du middleware d'authentification
 
-router.get('/', commentCtrl.findAllComments);
-router.get('/:Postid', commentCtrl.findOneComment);
-router.post('/', auth, commentCtrl.createComment);
-router.delete('/', auth, commentCtrl.deleteComment);
-router.post('/:commentid', auth, commentCtrl.modifyComment);
-router.post('/', auth, commentCtrl.likeDislikeComment);
+  router.post('/', auth, multer, comments.createComment); //Création d'un commentaire
+  router.put('/:id', auth, multer, comments.modifyComment); //Update d'un commentaire
+  router.delete('/:id', auth, comments.deleteComment); //Suppression d'un commentaire
+  router.get('/:id', auth, comments.getOneComment); //Récupération d'un commentaire via son orderId
+  router.get('/', auth, comments.findAllComments); //Récupération de tous les commentaires
+  router.post('/:id/like', auth, commentCtrl.likeDislikeComment); //Liker et disliker une publication
 
-module.exports = router;
+  app.use('/api/comments', router);
+};

@@ -1,76 +1,76 @@
 <template>
-  <div>
-    <h1>Infos utilisateur</h1>
-   
-    <h3>Pseudo :</h3>
-    <p>{{ pseudoUser }}</p>
-    <h3>Email :</h3>
-    <p>{{ email }}</p>
-    <button @click="onModify(id)">
-      <i class="fas fa-camera"> Modifier profile</i>
-    </button>
-    <button @click="deleteMyAccount(id)">
-      <i class="fas fa-user-slash"> Supprimer profile</i>
-    </button>
-  </div>
+    <main>
+        <!--Affichage de l'article-->
+        <div class="card">
+            <div class="profil__info">
+                <p class="profil__hello">Bonjour {{users.pseudo}} !</p>
+                <p class="profil__para">Voici les informations de votre compte : </p>
+                <p class="profil__pseudo"> Pseudonyme : {{users.pseudo}}</p>
+                <p class="profil__email">Email : {{users.email}}</p>
+                <p class="profil__compte">Creation du compte: {{ users.createdAt | formatDate }}</p>
+            </div>
+            <div class="profil__delete">
+                <!--Bouton pour supprimer l'article-->
+                <button v-on:click="deleteUser(users.id)" class="profil__button">Supprimer votre compte !</button>
+            </div>
+        </div>
+    </main>
 </template>
 
 <script>
-  import axios from 'axios';
-  import router from '../router';
-
-  export default {
+import axios from 'axios'
+export default {
     name: 'Profile',
-    data() {
-      return {
-        isAdmin: false,
-        pseudoUser: '',
-        email: '',
-        img: '',
-        id: '',
-      };
-    },
-    methods: {
-      localClear() {
-        localStorage.clear();
-        router.push({ path: '/' });
-      },
-      deleteMyAccount(n) {
-        let id = n;
-        let confirmUserDeletion = confirm(
-          'Êtes-vous sûr de vouloir supprimer votre compte ?'
-        );
-        if (confirmUserDeletion == true) {
-          axios
-            .delete('http://localhost:3000/api/users/' + id, {
-              headers: {
-                Authorization: 'Bearer ' + localStorage.getItem('token'),
-              },
-            })
-            .then((res) => {
-              console.log(res);
-              alert('Cliquez sur ok pour confirmer la suppression');
-              router.replace('http://localhost:8080/api/');
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-        } else {
-          return;
+    data(){
+        return {
+            users: "",
+            role: "",
+            userId: localStorage.getItem('userId'),
+            token: localStorage.getItem('usertoken'),
         }
-      },
-      toCommentsList() {
-        router.replace('http://localhost:8080/api/CommentsList');
-      },
-      toUsersList() {
-        router.replace('http://localhost:8080/api/UsersList');
-      },
     },
-  };
+    methods:{
+        deleteUser(id){
+            const userId = id;
+            const token = localStorage.getItem('usertoken');
+            const url = 'http://localhost:8080/api/user/' + userId
+            axios.delete(url, {
+                headers :{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(() => {
+                alert('user supprimé');
+            })
+            .catch(error => console.log(error));
+        },
+        printNewusers(){
+            const id = localStorage.getItem('userId');
+            const token = localStorage.getItem('usertoken');
+            const header = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+            axios.get('http://localhost:8080/api/user/'+ id, header)
+            .then(res => {
+                const data = res.data;
+                this.users = data;
+                console.log(data.pseudo)
+            })
+            .catch(error => console.log({error}));
+        }
+    },
+    
+    beforeMount() {
+        const role = localStorage.getItem('role');
+        this.role = role;
+        this.printNewusers();
+    },
+};
 </script>
 
 <style scoped>
-  .img__profile {
-    height: 300px;
-  }
 </style>

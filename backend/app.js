@@ -1,14 +1,21 @@
 const express = require('express'); //Importation du framewrok express pour node.js
 const bodyParser = require('body-parser');
-const userRoutes = require('./routes/user'); //Importation du routeur pour les utilisateurs
 const path = require('path'); //Accès aux chemins des fichiers
 const helmet = require('helmet'); // Aide à sécuriser les applications Express en définissant divers en-têtes HTTP
-const postRoutes = require('./routes/post'); //Importation du routeur pour les publications
-const authRoutes = require('./routes/auth');
 const auth = require('./middleware/auth'); //Appel du middleware d'authentification
+const cors = require('cors');
+
+const userRoutes = require('./routes/user'); //Importation du routeur pour les utilisateurs
+const postRoutes = require('./routes/post'); //Importation du routeur pour les publications
 const commentRoutes = require('./routes/comment'); //Importation du routeur pour les commentaires
-const db = require('./models');
+
 const app = express(); //Appliquation du framework express
+
+let corsOptions = {
+  origin: 'http://localhost:8081',
+};
+
+app.use(cors(corsOptions));
 
 app.use(helmet.contentSecurityPolicy()); // Atténue les attaques des scripts intersites.
 app.use(helmet.dnsPrefetchControl()); // Aide à contrôler la prélecture DNS, ce qui peut améliorer la confidentialité des utilisateurs au détriment des performances.
@@ -26,7 +33,9 @@ app.use(helmet.xssFilter()); // Désactive le filtre de script intersite bogué 
 require('dotenv').config();
 
 //Connexion à la base de données MySql
+const db = require('./models');
 db.sequelize.sync({ force: true });
+
 
 //Middleware permettant d'accéder à l'API depuis n'importe quelle origine
 app.use((req, res, next) => {
@@ -45,9 +54,8 @@ app.use((req, res, next) => {
 app.use(bodyParser.json()); //Middleware qui permet de parser les requêtes par le client, on peut y accèder grâce à req.body
 
 app.use('/api/users', auth, userRoutes);
-app.use('/api/messages', auth, postRoutes); //Middleware qui va permettre la transimission des requêtes vers ces url aux routes correspondantes
+app.use('/api/posts', auth, postRoutes); //Middleware qui va permettre la transimission des requêtes vers ces url aux routes correspondantes
 app.use('/api/comments', auth, commentRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images'))); //Middleware qui permet de charger les fichiers qui sont dans le répertoire image
-app.use('/api/auth', authRoutes);
 
 module.exports = app;

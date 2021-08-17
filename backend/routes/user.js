@@ -1,12 +1,16 @@
-const express = require('express');
-const router = express.Router(); //Chargement du middleware niveau router
-const auth = require('../middleware/auth'); //Appel du middleware d'authentification
-const userCtrl = require('../controllers/users');
-const multer = require('../middleware/multer-config'); //Appel du middleware pour la gestion des images
+module.exports = (app) => {
+  const users = require('../controllers/users');
+  const auth = require('../middleware/auth'); //Appel du middleware d'authentification
 
-//Liage des routes aux controllers
-router.put('/:id', auth, userCtrl.modifyPassword); //Modification du password utilisateur
-router.put('/:id', auth, multer, userCtrl.modifyUser); //Modification d'un utilisateur
-router.delete('/:id', auth, userCtrl.deleteUser); //Suppression d'un utilisateur
+  var router = require('express').Router(); //Chargement du middleware niveau router
 
-module.exports = router;
+  //Liage des routes aux controllers
+  router.post('/signup', users.signup); //Création utilisateur
+  router.post('/login', users.login); //Connexion utilisateur
+  router.put('/:id', auth, users.updateUser); //Modification d'un utilisateur
+  router.delete('/:id', auth, users.deleteUser); //Suppression d'un utilisateur
+  router.get('/:id', auth, users.getOneUser);//Récupération d'un utilisateur
+  router.get('/', auth, users.getAllUser);//Récupération de tous les utilisateurs
+
+  app.use('/api/user', router);
+};

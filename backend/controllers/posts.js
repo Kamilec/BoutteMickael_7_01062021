@@ -1,105 +1,124 @@
-const db = require('../models/Index');
-const Post = db.posts;
+const db = require('../models/');
 const User = db.users;
+const Posts = db.posts;
 const Comment = db.comments;
+const Op = db.Sequelize.Op;
 
+//Création d'une publication
 exports.createPost = (req, res, next) => {
-  let imagePost = '';
-  if (req.file) {
-    imagePost = `${req.protocol}://${req.get('host')}/images/${
-      req.file.filename
-    }`;
-  }
-  const post = new Post({
-    UserId: req.body.UserId,
-    post: req.body.post,
-    postUrl: imagePost,
-  });
-  console.log(message);
-  post
-    .save()
-    .then(() => res.status(201).json({ message: 'Publication réussie' }))
-    .catch((error) => res.status(400).json({ error }));
-  //}
-};
-
-exports.findAllPosts = (req, res, next) => {
-  Post.findAll({
-    include: { model: User, required: true, attributes: ['Pseudo'] },
-    order: [['id', 'DESC']],
-  })
-    .then((posts) => {
-      const list = posts.map((post) => {
-        return Object.assign(
-          {},
-          {
-            id: post.id,
-            createdAt: post.createdAt,
-            post: post.post,
-            messageUrl: post.postUrl,
-            UserId: post.UserId,
-            pseudo: post.User.pseudo,
-            isActive: post.User.isActive,
-          }
-        );
+  const post = {
+    message: req.body.message,
+    userId: req.body.userId,
+    image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+  };
+  Posts.create(post)
+    .then((post) => {
+      res.send(post);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message ||
+          "Une erreur s'est produite lors de la création de la publication",
       });
-      res.status(200).json({ list });
-    })
-    .catch((error) => res.status(400).json({ error }));
-};
-
-exports.findOnePost = (req, res, next) => {
-  const onePost = {};
-  Post.findOne({
-    where: { id: req.params.id },
-    include: {
-      model: User,
-      required: true,
-      attributes: ['Pseudo'],
-    },
-    order: [['id', 'DESC']],
-  })
-    .then((message) => {
-      onePost.id = post.id;
-      onePost.userId = post.UserId;
-      onePost.pseudo = post.User.pseudo;
-      onePost.createdAt = post.createdAt;
-      onePost.post = post.post;
-      onePost.postUrl = post.postUrl;
-      res.status(200).json(onePost);
-    })
-    .catch((error) => res.status(404).json({ error }));
-};
-
-exports.findAllPostsForOne = (req, res, next) => {
-  let list = '';
-  Post.findAll({
-    where: { UserId: req.params.id },
-  })
-    .then((res) => {
-      list = res;
-      res.status(200).json({ list });
-    })
-    .catch((error) => {
-      res.status(404).json({ error });
     });
 };
 
-exports.deletePost = (req, res, next) => {
-  if (req.query.postUid == req.query.uid || req.query.uid == 1) {
-    Comment.destroy({ where: { MessageId: req.query.messageId } });
-    Post.destroy({ where: { id: req.query.messageId } })
-      .then((res) => {
-        res
-          .status(200)
-          .json({ message: 'Message and its comments have been destroyed' });
-      })
-      .catch((error) => res.status(400).json({ error }));
-  } else {
-    res.status(401).json({ message: ' unauthorized ' });
-  }
+//Modification d'une publication
+exports.modifyPost = (req, res, next) => {
+  const id = req.params.id;
+  const modification = req.file
+    ? {
+        message: req.body.message,
+        userId: req.body.userId,
+        image: `${req.protocol}://${req.get('host')}/images/${
+          req.file.filename
+        }`,
+      }
+    : {
+        message: req.body.message,
+        userId: req.body.userId,
+      };
+
+  Posts.update(modification, {
+    where: { id: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: "La publication est modifiée",
+        });
+      } else {
+        res.send({
+          message: `Update impossible pour la publication id=${id}.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Erreur lors de maj de la publication id=" + id,
+      });
+    });
 };
 
+//Suppresion d'une publication
+exports.deletePost = (req, res, next) => {
+  const id = req.params.id;
+  Posts.destroy({
+    where: { id: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: 'Publication supprimée!',
+        });
+      } else {
+        res.send({
+          message: `Suppression de la publication id=${id} impossbile.`,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Erreur lors de la suppression de la publication id=" + id,
+      });
+    });
+};
+
+//Récupération d'une publication
+exports.getOnePost = (req, res, next) => {
+  const id = req.params.id;
+  Articles.findByPk(id)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Problème de récupération de la publication id=" + id,
+      });
+    });
+};
+
+//Récupération de toutes les publications
+exports.findAllPosts = (req, res, next) => {
+  Posts.findAll({
+    include: [{ model: User }],
+    order: [
+      ['updatedAt', 'DESC'],
+      ['createdAt', 'DESC'],
+    ],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Erreur lors de la récupération des publications',
+      });
+    });
+};
+
+// Ajout d'un like ou d'un dislike sur la publication
 exports.likeDislikePost = (req, res, next) => {
   const like = req.body.like;
   const userId = req.body.userId;

@@ -2,17 +2,18 @@
 <template>
   <div id="app">
     <headfoot />
+    <nav />
     <router-view />
   </div>
 </template>
 
 <script>
-import Headfoot from './components/Headfoot.vue'
+  import Headfoot from './components/Headfoot.vue';
   export default {
-    name: "App",
-    components : {
-      Headfoot
-    }
+    name: 'App',
+    components: {
+      Headfoot,
+    },
   };
 </script>
 
@@ -22,7 +23,6 @@ import Headfoot from './components/Headfoot.vue'
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    margin-top: 60px;
   }
 
   * {
@@ -31,9 +31,9 @@ import Headfoot from './components/Headfoot.vue'
   }
 
   body {
-    background: linear-gradient(-225deg, #d15159 50%, #142543 50%);
-    background-attachment: fixed;
+    background-image: url('./assets/Screenshot_1.jpg');
     background-repeat: no-repeat;
+    background-size: 2450px;
     opacity: 0.95;
     margin: 2%;
     font-family: 'roboto-regular', sans-serif;
@@ -46,41 +46,46 @@ import Headfoot from './components/Headfoot.vue'
 
   a {
     text-decoration: none;
+    color: burlywood;
+    font-weight: bolder;
+  }
+
+  p {
     color: white;
   }
 
-  .logoGM {
+  h1 {
+    color: whitesmoke;
+  }
+
+  h3 {
+    color: whitesmoke;
+    font-style: italic;
+  }
+
+  .subtitle__h1 {
+    font-size: 12px;
+    margin-top: -25px;
+    margin-bottom: 40px;
+  }
+
+  .logoGM, .picture {
     height: 270px;
-    position: relative;
-    bottom: 150px;
+    grid-area: logo;
   }
 
-  /*form {
-    width: 300px;
-    min-height: 500px;
-    height: auto;
-    border-radius: 5px;
-    margin: 2% auto;
-    box-shadow: 0 9px 50px hsl(20deg 67% 75% / 31%);
-    padding: 2%;
-    background-image: linear-gradient(-225deg, #d15159 50%, #142543 50%);
-    margin-top: 53px;
-  }*/
-
-  .form-control {
-    margin: 0px;
-    width: 350px;
-    max-width: 100%;
+  header {
+    display: grid;
+    align-items: center;
+    margin-top: -100px;
+    grid-template-areas: 'logo . navbar button';
+    grid-template-columns: auto 1fr auto;
   }
 
-  form .con {
-    display: -webkit-flex;
+  nav {
     display: flex;
-    -webkit-justify-content: space-around;
-    justify-content: space-around;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin: 0 auto;
+    align-items: center;
+    grid-area: navbar;
   }
 
   header p {
@@ -91,42 +96,30 @@ import Headfoot from './components/Headfoot.vue'
     background: #fff;
     color: #333;
     padding: 16px 1px 17px 9px;
-    border-radius: 5px 0px 0px 5px;
+    border-radius: 50px;
   }
 
-  #eye {
-    background: #fff;
-    color: #333;
-    margin: 5.9px 0 0 0;
-    margin-left: -20px;
-    padding: 15px 9px 19px 0px;
-    border-radius: 0px 5px 5px 0px;
-    float: right;
-    position: relative;
-    right: 1%;
-    top: -0.2%;
-    z-index: 5;
-    cursor: pointer;
-  }
+.form__row {
+  color: burlywood;
+}
 
-  input[class='form-row__input'] {
+  .form__row__input {
     width: 250px;
     height: 50px;
     margin-top: 2%;
-    padding: 15px;
     font-size: 16px;
     font-family: 'Abel', sans-serif;
     color: #5e6472;
     outline: none;
     border: none;
-
-    border-radius: 0px 5px 5px 0px;
+    border-radius: 50px;
     transition: 0.2s linear;
+    text-indent: 10px;
   }
 
   input:focus {
     transform: translateX(-2px);
-    border-radius: 5px;
+    border-radius: 50px;
   }
 
   button,
@@ -138,13 +131,12 @@ import Headfoot from './components/Headfoot.vue'
     height: 40px;
     padding: 0 20px;
     background: #fff;
-    border-radius: 5px;
+    border-radius: 50px;
     outline: none;
     cursor: pointer;
     text-align: center;
     transition: all 0.2s linear;
     margin: 7% auto;
-    letter-spacing: 0.05em;
     margin-top: 10px;
   }
 
@@ -169,13 +161,25 @@ import Headfoot from './components/Headfoot.vue'
     }
   }
 
-  .card__action {
-    color: white;
-    text-decoration: underline;
+  .header__logo {
+    font-size: 30px;
   }
 
-  .card__title {
-    color: white;
+  .header__nav__logos {
+    padding: 10px;
+  }
+
+  .card {
+    border: solid 1px white;
+    background: linear-gradient(-225deg, #d15159 50%, #142543 50%);
+    position: relative;
+    top: 170px;
+  }
+
+  .card__action {
+    color: burlywood;
+    font-weight: bolder;
+    text-decoration: underline;
   }
 
   .card__action:hover {
@@ -195,12 +199,30 @@ import Headfoot from './components/Headfoot.vue'
   }
 
   footer {
-    color: white;
+    color: black;
     position: absolute;
     width: 100%;
     bottom: 0;
     left: 0;
     margin-bottom: 10px;
     text-align: center;
+    font-weight: bolder;
+  }
+
+  @media screen and (max-width: 600px) {
+    header {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas:
+        'logo . button'
+        'navbar navbar navbar';
+      display: inherit;
+    }
+    nav {
+      grid-area: navbar;
+      justify-content: space-around;
+    }
+    .header__nav__logos {
+      margin-top: -150px;
+    }
   }
 </style>

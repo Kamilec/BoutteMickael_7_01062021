@@ -1,15 +1,16 @@
-const express = require('express');
-const router = express.Router(); //Chargement du middleware niveau router
-const auth = require('../middleware/auth'); //Appel du middleware d'authentification
-const postCtrl = require('../controllers/posts');
-const multer = require('../middleware/multer-config'); //Appel du middleware pour la gestion des images
+module.exports = (app) => {
+  const multer = require('../middleware/multer-config');//Chargement du middleware pour la gestion des images
+  var router = require('express').Router(); //Chargement du middleware niveau router
+  const posts = require('../controllers/posts'); //Chargement du middleware niveau post
+  const auth = require('../middleware/auth'); //Chargement du middleware d'authentification
 
-//Liage des routes aux controllers
-router.post('/', auth, multer, postCtrl.createPost); // Post - Création des messages avec les images.
-router.get('/all/:id', postCtrl.findAllPostsForOne);
-router.get('/:id', postCtrl.findOnePost);
-router.get('/', postCtrl.findAllPosts);
-router.delete('/', auth, postCtrl.deletePost);
-router.post('/:id/like', auth, postCtrl.likeDislikePost); //Liker et disliker une publication
+  //Liage des routes aux controllers
+  router.post('/', auth, multer, posts.createPost); //Création d'une publication
+  router.put('/:id', auth, multer, posts.modifyPost); //Update d'une publication
+  router.delete('/:id', auth, posts.deletePost); //Suppression de la publication
+  router.get('/:id', auth, posts.getOneArticle); //Récupération d'une publication via son orderId
+  router.get('/', auth, posts.findAllPosts);//Récupération de toutes les publications
+  router.post('/:id/like', auth, posts.likeDislikePost); //Liker et disliker une publication
 
-module.exports = router;
+  app.use('/api/articles', router);
+};;

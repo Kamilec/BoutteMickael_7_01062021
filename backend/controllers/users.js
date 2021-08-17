@@ -1,128 +1,170 @@
-const db = require('../models/Index');
+const db = require('../models/');
 const User = db.users;
-const Message = db.messages;
-const Comment = db.comments;
-const { Op } = require('sequelize');
+const Op = db.Sequelize.Op;
 
-// Routes CRUD : Create, Read, Update, Delete.
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
+/*const MaskData = require('maskdata');*/
 
-exports.findOneUser = (req, res, next) => {
-  const userData = {};
-  User.findOne({ where: { id: req.params.id } })
-    .then((user) => {
-      userData.id = user.id;
-      userData.pseudo = user.pseudo;
-      userData.email = user.email;
-      userData.createdAt = user.createdAt;
-      userData.isAdmin = user.isAdmin;
-    })
-    .then(() => {
-      Message.count({ where: { userId: req.params.id } }).then((total) => {
-        userData.totalMessages = total;
+//Masquage de l'email
+/*const emailMask2Options = {
+  maskWith: '*',
+  unmaskedStartCharactersBeforeAt: 0,
+  unmaskedEndCharactersAfterAt: 0,
+  maskAtTheRate: false,
+};*/
+//Output: ********@**********
+
+//Routes CRUD : Create, Read, Update, Delete
+
+//Inscription utilisateur
+let role = '';
+exports.signup = (req, res) => {
+  if (req.body.email === process.env.Admin_email) {
+    role = 'admin';
+  } else {
+    role = 'user';
+  }
+  bcrypt.hash(req.body.password, 10).then((hash) => {
+    const user = {
+      pseudo: req.body.pseudo,
+      email: req.body.email,
+      role: role,
+      password: hash,
+    };
+    User.create(user)
+      .then((data) => {
+        res.send(data);
+      })
+     
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message ||
+            "Une erreur est survenue lors de la création de l'utilisateur.",
+        });
+        
       });
-    })
-    .then(() => {
-      Comment.count({ where: { userId: req.params.id } }).then((total) => {
-        userData.totalComments = total;
-        res.status(200).json(userData);
-      });
-    })
-    .catch((error) => res.status(404).json({ error }));
+  });
 };
 
-exports.findAllUsers = (req, res, next) => {
-  User.findAll({
-    where: { id: { [Op.gt]: 0 } },
+//Connexion utilisateur
+exports.login = (req, res) => {
+  User.findOne({
+    where: { email: req.body.email }
   })
-    .then((found) => {
-      res.status(200).json({ found });
-    })
-    .catch((error) => {
-      res.status(400).json({ error });
-    });
-};
-
-//Modification d'un utilisateur
-exports.modifyUser = (req, res, next) => {
-  const userObject = req.file
-    ? {
-        ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${
-          req.file.filename
-        }`,
+    .then((user) => {
+      if (!user) {
+        return res.status(401).json({ error });
+      } else {
+        bcrypt.compare(req.body.password, user.password)
+          .then(valid => {
+            if (!valid) {
+              return res.status(401).json({ error: 'Mot de passe incorrect !' });
+            } else {
+              res.status(201).json({
+                id: user.id,
+                role: user.role,
+                pseudo: user.pseudo,
+                token: jwt.sign(
+                  { id: user.id },
+                  'RANDOM_TOKEN_SECRET',
+                  { expiresIn: "8h"}),
+              });
+            }
+          })
+          .catch(error => res.status(500).json({ error }));
       }
-    : { ...req.body };
-  User.updateOne({ _id: req.params.id }, { ...userObject, _id: req.params.id })
-    .then(() => res.status(200).json({ message: 'Modified user !' }))
-    .catch((error) => res.status(400).json({ error }));
+
+    })
+    .catch(error => res.status(500).json({ error }));
 };
 
-//Modification du password utilisateur
-exports.modifyPassword = (req, res, next) => {
-  User.findOne({ id: req.params.id })
-    .then((user) => {
-      bcrypt
-        .hash(req.body.password, 10)
-        .then((hash) => {
-          user
-            .update({
-              password: hash,
-            })
-            .then((user) => res.status(200).json(user))
-            .catch((error) => res.status(400).json({ error: error }));
-        })
-        .catch((error) => res.status(400).json({ error: error }));
+//Update utilisateur
+exports.updateUser = (req, res, next) => {
+  bcrypt.hash(req.body.password, 10).then((hash) => {
+    const id = req.params.id;
+    const newProfile = req.body
+      ? {
+          pseudo: req.body.pseudo,
+          email: req.body.email,
+          password: hash,
+        }
+      : {
+          pseudo: req.body.pseudo,
+          email: req.body.email,
+          password: hash,
+        };
+    User.update(newProfile, {
+      where: { id: id },
     })
-    .catch((error) => {
-      res.status(500).json({ error: error });
+      .then((num) => {
+        if (num == 1) {
+          res.send({
+            message: 'Mise à jour utilisateur modifiée.',
+          });
+        } else {
+          res.send({
+            message: `Impossible de modifier l'utilisateur avec l'id=${id}!`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: 'Erreur lors de la mise à jour id=' + id,
+        });
+      });
+  });
+};
+
+//Suppression utilisateur
+exports.deleteUser = (req, res, next) => {
+  const id = req.params.id;
+  User.destroy({
+    where: { id: id },
+  })
+    .then((num) => {
+      if (num == 1) {
+        res.send({
+          message: 'Utilisateur supprimé!',
+        });
+      } else {
+        res.send({
+          message: `Impossible de supprimer id=${id}. `,
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: 'Impossible de supprimer l\'utilisateur id=' + id,
+      });
     });
 };
 
-//Suppression d'un utilisateur
-exports.deleteUser = (req, res, next) => {
-  User.findOne({ _id: req.params.id })
-    .then((user) => {
-      const filename = user.imageUrl.split('/images/')[1];
-      fs.unlink(`images/${filename}`, () => {
-        User.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'User deleted !' }))
-          .catch((error) => res.status(400).json({ error }));
-      });
+//Récupération d'un utilisateur
+exports.getOneUser = (req, res, next) => {
+  const id = req.params.id;
+
+  User.findByPk(id)
+    .then((data) => {
+      res.send(data);
     })
-    .catch((error) => res.status(500).json({ error }));
+    .catch((err) => {
+      res.status(500).send({
+        message: 'Erreur lors de la récupération de l\'utilisateur id=' + id,
+      });
+    });
 };
 
-
-// params uid & isAdmin
-exports.deleteOneUser = (req, res, next) => {
-    console.log(" PROCESSUS DE SUPPRESSION DE L'UTILISATEUR ");
-    console.log(" Utilisateur Id est: " + req.query.uid)
-    console.log(" L'ID utilisateur qui demande la suppression est sAdmin : " + req.query.isAdmin);
-
-    console.log(" Si isAdmin True => Supprimer l'utilisateur ")
-    console.log(" Si False => Demande non autorisée ")
-    
-    console.log(req.query.isAdmin)
-    if(req.query.isAdmin) {
-        User.destroy({ where: { id: req.query.uid}})
-        Message.destroy({ where: { UserId: req.query.uid }})
-        Comment.destroy({ where: { UserId: req.query.uid }})
-        .then((res) => {
-            res.status(200).json({ message: "Messages ainsi que tous les commentaires ont été détruits" })
-        })
-        .catch(error => res.status(400).json({ error }))
-    } else {
-        res.status(401).json({message : " Non autorisé "})
-    }
-}
-
-exports.deleteMyAccount = (req, res, next) => {
-    console.log(" PROCESSUS DE SUPPRESSION DE L'UTILISATEUR  ");
-    console.log(" Utilisateur Id est: " + req.params.id)
-
-    Comment.destroy({ where: { UserId: req.params.id }})
-    Message.destroy({ where: { UserId: req.params.id }})
-    User.destroy({ where: { id: req.params.id }}) 
-    .then( () => res.status(200).json({message: "Ok!"}))
-    .catch(error => console.log(error))
-}
+//Récupération de tous les utilisateurs
+exports.getAllUser = (req, res, next) => {
+  User.findAll()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Une erreur s\'est produite lors de la récupération des utilisateurs',
+      });
+    });
+};
