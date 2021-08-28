@@ -2,7 +2,16 @@ module.exports = (sequelize, Sequelize, user) => {
   const Posts = sequelize.define(
     'post',
     {
-      message: {
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      likes: {
+        type: Sequelize.INTEGER,
+        unsigned: true,
+        default: 0,
+      },
+      content: {
         type: Sequelize.STRING,
         allowNull: false,
         required: true,

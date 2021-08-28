@@ -1,94 +1,24 @@
 const db = require('../models/');
 const Comments = db.comments;
-const User = db.users;
-const Op = db.Sequelize.Op;
 
-//Création d'un commentaire
-exports.createComment = (req, res, next) => {
-  const comment = {
-    message: req.body.message,
-    postId: req.body.postId,
-    userId: req.body.userId,
-    image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-  };
-  Comments.create(comment)
-    .then((comment) => {
-      res.send(comment);
+
+// Récupération de tous les commentaires
+exports.getAllComments = (req, res) => {
+  Comments.findAll({ include: ['user'] })
+    .then((data) => {
+      res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
         message:
           err.message ||
-          "Une erreur s'est produite lors de la création du commentaire ",
+          'Une erreur est survenue lors de la récupération des posts',
       });
     });
 };
 
-//Modification d'un commentaire
-exports.modifyComment = (req, res, next) => {
-  const id = req.params.id;
-  const modification = req.file
-    ? {
-        message: req.body.message,
-        postId: req.body.postId,
-        userId: req.body.userId,
-        image: `${req.protocol}://${req.get('host')}/images/${
-          req.file.filename
-        }`,
-      }
-    : {
-        message: req.body.message,
-        postId: req.body.postId,
-        userId: req.body.userId,
-      };
 
-  Comments.update(modification, {
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: 'Le commentaire a été modifié',
-        });
-      } else {
-        res.send({
-          message: `Impossible d\'effectuer la maj du commentaire id=${id}.`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Erreur lors de la maj du commentaire id=" + id,
-      });
-    });
-};
-
-//Suppression d'un commentaire
-exports.deleteComment = (req, res, next) => {
-  const id = req.params.id;
-
-  Comments.destroy({
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: 'Commentaire supprimé!',
-        });
-      } else {
-        res.send({
-          message: `Impossible de supprimer le commentaire id=${id}.`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Erreur lors de la suppression du commentaire id=" + id,
-      });
-    });
-};
-
-//Récupération d'un commentaire
+// Récupération d'un commentaire
 exports.getOneComment = (req, res, next) => {
   const id = req.params.id;
   Comments.findByPk(id)
@@ -97,32 +27,51 @@ exports.getOneComment = (req, res, next) => {
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Problème de récupération du commentaire id=" + id,
+        message: "Problème de récupération du commentaire avec l'id=" + id,
       });
     });
 };
 
-//Récupération de tous les commentaires
-exports.findAllComments = (req, res, next) => {
-  Comments.findAll({
-    where: {
-      postId: req.params.postId    
-    },
-    include: [{ model: User }],
-    order: [
-      ['updatedAt', 'DESC'],
-      ['createdAt', 'DESC'],
-    ],
-  })
+// Création d'un commentaire
+exports.createComment = (req, res, next) => {
+  const comment = {
+    comment: req.body.comment,
+    postId: req.body.postId,
+    userId: req.body.userId,
+  };
+  Comments.create(comment)
     .then((data) => {
-      res.send(data);
+      res.status(201).json({ message: 'Commentaire créé !' });
     })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || 'Erreur lors de la récupération des commentaires',
-      });
-    });
+    .catch((error) => res.status(500).json({ error }));
+};
+
+// Suppression d'un commentaire
+exports.deleteComment = (req, res, next) => {
+  Comments.destroy({ where: { id: req.params.id } })
+    .then(() => res.status(200).json({ message: 'Commentaire supprimé !' }))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+// Modification d'un commentaire
+exports.updateComment = (req, res, next) => {
+  Comments.findOne({
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((comment) => {
+      comment
+        .update({
+          ...req.body,
+          where: {
+            id: req.params.id,
+          },
+        })
+        .then((comment) => res.status(200).json(comment))
+        .catch((error) => res.status(400).json({ error: error }));
+    })
+    .catch((error) => res.status(500).json({ error: error }));
 };
 
 // Ajout d'un like ou d'un dislike sur les publications

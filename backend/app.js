@@ -1,43 +1,23 @@
+// Création du serveur avec le framework Express
 const express = require('express'); //Importation du framewrok express pour node.js
 const bodyParser = require('body-parser');
 const path = require('path'); //Accès aux chemins des fichiers
+
+// Modules de sécurité
 const helmet = require('helmet'); // Aide à sécuriser les applications Express en définissant divers en-têtes HTTP
-const auth = require('./middleware/auth'); //Appel du middleware d'authentification
+require('dotenv').config();//Module indépendant qui charge les variables d'environnement
+const hpp = require('hpp');
 const cors = require('cors');
 
-const userRoutes = require('./routes/user'); //Importation du routeur pour les utilisateurs
-const postRoutes = require('./routes/post'); //Importation du routeur pour les publications
-const commentRoutes = require('./routes/comment'); //Importation du routeur pour les commentaires
+// Importation des routes
+const usersRoutes = require('./routes/users'); //Importation du routeur pour les utilisateurs
+const postsRoutes = require('./routes/posts'); //Importation du routeur pour les publications
+const commentsRoutes = require('./routes/comments'); //Importation du routeur pour les commentaires
 
-const app = express(); //Appliquation du framework express
+// Lancement du framework express
+const app = express(); 
 
-let corsOptions = {
-  origin: 'http://localhost:8081',
-};
-
-app.use(cors(corsOptions));
-
-app.use(helmet.contentSecurityPolicy()); // Atténue les attaques des scripts intersites.
-app.use(helmet.dnsPrefetchControl()); // Aide à contrôler la prélecture DNS, ce qui peut améliorer la confidentialité des utilisateurs au détriment des performances.
-app.use(helmet.expectCt()); // Aide à atténuer les certificats SSL mal émis.
-app.use(helmet.frameguard()); // Aide à atténuer les attaques de détournement de clic.
-app.use(helmet.hidePoweredBy()); // Supprime l'en-tête X-Powered-By, qui est défini par défaut dans certains frameworks (comme Express).
-app.use(helmet.hsts()); // Indique aux navigateurs de préférer HTTPS à HTTP non sécurisé.
-app.use(helmet.ieNoOpen()); // Internet Ex8 - Il force l'enregistrement des téléchargements potentiellement dangereux, ce qui atténue l'exécution du HTML dans le contexte de votre site.
-app.use(helmet.noSniff()); // Cela atténue le reniflement de type MIME* qui peut entraîner des failles de sécurité.// * Le type Multipurpose Internet Mail Extensions (type MIME) est un standard permettant d'indiquer la nature et le format d'un document.
-app.use(helmet.permittedCrossDomainPolicies()); // Indique à certains clients (principalement des produits Adobe) la politique de votre domaine pour le chargement du contenu interdomaine.
-app.use(helmet.referrerPolicy()); // Définit l'en-tête Referrer-Policy qui contrôle les informations définies dans l'en-tête Referer.
-app.use(helmet.xssFilter()); // Désactive le filtre de script intersite bogué des navigateurs en définissant l'en-tête X-XSS-Protection sur 0.
-
-//Module indépendant qui charge les variables d'environnement
-require('dotenv').config();
-
-//Connexion à la base de données MySql
-const db = require('./models');
-db.sequelize.sync({ force: true });
-
-
-//Middleware permettant d'accéder à l'API depuis n'importe quelle origine
+// Gestion CORS - Middleware permettant d'accéder à l'API depuis n'importe quelle origine
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*'); //Indication que les ressources peuvent être partagées depuis n'importe quelle origine
   res.setHeader(
@@ -51,11 +31,25 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(bodyParser.json()); //Middleware qui permet de parser les requêtes par le client, on peut y accèder grâce à req.body
+app.use(cors()); // Middleware CORS - Ajout de HEADERS à l'objet "response"
+app.use(helmet()); // Protection d'Express en définissant divers en-têtes HTTP
+app.use(hpp()); // Protection contre les attaques des paramètres HTTP
 
-app.use('/api/users', auth, userRoutes);
-app.use('/api/posts', auth, postRoutes); //Middleware qui va permettre la transimission des requêtes vers ces url aux routes correspondantes
-app.use('/api/comments', auth, commentRoutes);
+// Package body-parser 
+app.use(bodyParser.json()); // Middleware qui permet de parser les requêtes par le client (extraction de l'ojbet JSON à la demande) on peut y accèder grâce à req.body
+app.use(bodyParser.urlencoded());
+
+// Permet au dossier "images" d'être statique
 app.use('/images', express.static(path.join(__dirname, 'images'))); //Middleware qui permet de charger les fichiers qui sont dans le répertoire image
+
+//Connexion à la base de données MySql
+const db = require('./models');
+db.sequelize.sync();
+//db.sequelize.sync({ force: true });
+
+// Middleware qui va permettre la transimission des requêtes vers ces url aux routes correspondantes
+app.use('/user', usersRoutes);
+app.use('/post', postsRoutes);
+app.use('/comment',commentsRoutes);
 
 module.exports = app;

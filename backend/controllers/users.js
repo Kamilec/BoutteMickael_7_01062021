@@ -1,170 +1,166 @@
+const bcrypt = require('bcrypt'); //Hashage et salage des mots de passe
+const jwt = require('jsonwebtoken'); //Création d'un token utilisateur
+const MaskData = require('maskdata');
+const fs = require('fs');
+
 const db = require('../models/');
 const User = db.users;
-const Op = db.Sequelize.Op;
-
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
-/*const MaskData = require('maskdata');*/
+const Comments = db.comments;
+const Posts = db.posts
 
 //Masquage de l'email
-/*const emailMask2Options = {
+const emailMask2Options = {
   maskWith: '*',
   unmaskedStartCharactersBeforeAt: 0,
   unmaskedEndCharactersAfterAt: 0,
   maskAtTheRate: false,
-};*/
-//Output: ********@**********
-
-//Routes CRUD : Create, Read, Update, Delete
-
-//Inscription utilisateur
-let role = '';
-exports.signup = (req, res) => {
-  if (req.body.email === process.env.Admin_email) {
-    role = 'admin';
-  } else {
-    role = 'user';
-  }
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    const user = {
-      pseudo: req.body.pseudo,
-      email: req.body.email,
-      role: role,
-      password: hash,
-    };
-    User.create(user)
-      .then((data) => {
-        res.send(data);
-      })
-     
-      .catch((err) => {
-        res.status(500).send({
-          message:
-            err.message ||
-            "Une erreur est survenue lors de la création de l'utilisateur.",
-        });
-        
-      });
-  });
 };
 
-//Connexion utilisateur
-exports.login = (req, res) => {
+//Output: ********@**********
+
+// Création utilisateur
+exports.signup = (req, res, next) => {
+  const pseudo = req.body.pseudo;
+  const email = req.body.email;
+  const password = req.body.password;
+  let role = "";
+  if (req.body.email === "admin@groupomania.com"){
+    role = "admin"
+  }else {
+    role = "user"
+  }
+   User.findOne({
+     attributes: ['email'],
+     where: { email: email },
+   })
+     .then((userFound) => {
+       if (!userFound) {
+         bcrypt.hash(password, 10).then((hash) => {
+           const user = new User({
+             pseudo: pseudo,
+             email: email,
+             /*imageProfil: `${req.protocol}://${req.get('host')}/images/${
+               req.file.filename
+             }`,*/
+             password: hash,
+             role: role,
+           });
+           user
+             .save()
+             .then(() =>
+               res.status(201).json({ message: 'Utilisateur créé !' })
+             )
+             .catch((error) => res.status(400).json({ error }));
+         });
+       } else if (userFound) {
+         return res.status(409).json({ error: "L'utilisateur existe déjà !" });
+       }
+     })
+     .catch((error) => res.status(500).json({ error }));
+};
+
+
+// Connexion utilisateur
+exports.login = (req, res, next) => {
   User.findOne({
     where: { email: req.body.email }
   })
     .then((user) => {
+      console.log(user.id);
       if (!user) {
         return res.status(401).json({ error });
       } else {
         bcrypt.compare(req.body.password, user.password)
           .then(valid => {
             if (!valid) {
-              return res.status(401).json({ error: 'Mot de passe incorrect !' });
+              return res.status(401).json({ error: 'Mot de passe erroné !' });
             } else {
-              res.status(201).json({
-                id: user.id,
+              res.status(200).json({
+                userId: user.id,
                 role: user.role,
                 pseudo: user.pseudo,
                 token: jwt.sign(
-                  { id: user.id },
+                  { userId: user.id },
                   'RANDOM_TOKEN_SECRET',
-                  { expiresIn: "8h"}),
+                  { expiresIn: "24h"}),
               });
             }
           })
-          .catch(error => res.status(500).json({ error }));
+          .catch(error => res.status(500).json({ error  }));
       }
 
     })
-    .catch(error => res.status(500).json({ error }));
+    .catch(error => res.status(500).json({ error : 'Aucun utilisateur enregistré avec cet email' }));
 };
 
-//Update utilisateur
-exports.updateUser = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    const id = req.params.id;
-    const newProfile = req.body
-      ? {
-          pseudo: req.body.pseudo,
-          email: req.body.email,
-          password: hash,
-        }
-      : {
-          pseudo: req.body.pseudo,
-          email: req.body.email,
-          password: hash,
-        };
-    User.update(newProfile, {
-      where: { id: id },
-    })
-      .then((num) => {
-        if (num == 1) {
-          res.send({
-            message: 'Mise à jour utilisateur modifiée.',
-          });
-        } else {
-          res.send({
-            message: `Impossible de modifier l'utilisateur avec l'id=${id}!`,
-          });
-        }
-      })
-      .catch((err) => {
-        res.status(500).send({
-          message: 'Erreur lors de la mise à jour id=' + id,
-        });
+// Récupération tous utilisateurs
+exports.getAllUsers = (req, res, next) => {
+  User.getAll((err, data) => {
+    if (err)
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving users.',
       });
+    else res.send(data);
   });
 };
 
-//Suppression utilisateur
-exports.deleteUser = (req, res, next) => {
-  const id = req.params.id;
-  User.destroy({
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: 'Utilisateur supprimé!',
-        });
-      } else {
-        res.send({
-          message: `Impossible de supprimer id=${id}. `,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: 'Impossible de supprimer l\'utilisateur id=' + id,
-      });
-    });
-};
 
-//Récupération d'un utilisateur
+// Récupération utilisateur
 exports.getOneUser = (req, res, next) => {
-  const id = req.params.id;
-
-  User.findByPk(id)
-    .then((data) => {
-      res.send(data);
+  User.findOne({
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((user) => {
+      res.status(200).json(user);
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: 'Erreur lors de la récupération de l\'utilisateur id=' + id,
+    .catch((error) => {
+      res.status(404).json({
+        error: error,
       });
     });
 };
 
-//Récupération de tous les utilisateurs
-exports.getAllUser = (req, res, next) => {
-  User.findAll()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Une erreur s\'est produite lors de la récupération des utilisateurs',
-      });
-    });
+// logique métier : modifier un utilisateur
+exports.updateUser = (req, res, next) => {
+  const userObject = req.file
+    ? {
+        ...req.body.userId,
+        //image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        image: req.body.image,
+      }
+    : { ...req.body };
+  User.update(
+    { ...userObject, id: req.params.id },
+    { where: { id: req.params.id } }
+  )
+    .then(() => res.status(200).json({ ...userObject }))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+// Suppression profil utilisateur
+exports.deleteUser = (req, res, next) => {
+  Comments.destroy({ where: { userId: req.params.id } })
+    .then(() =>
+      Posts.findAll({ where: { userId: req.params.id } })
+        .then((posts) => {
+          posts.forEach((post) => {
+            Comments.destroy({ where: { postId: post.id } });
+            Posts.destroy({ where: { id: post.id } });
+          });
+        })
+        .then(() =>
+          User.findOne({ where: { id: req.params.id } }).then((user) => {
+            const filename = user.image;
+            fs.unlink(`images/${filename}`, () => {
+              User.destroy({ where: { id: req.params.id } }).then(() =>
+                res.status(200).json({ message: 'Utilisateur supprimé !' })
+              );
+            });
+          })
+        )
+    )
+
+    .catch((error) => res.status(400).json({ error }));
 };

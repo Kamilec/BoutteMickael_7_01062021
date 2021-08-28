@@ -2,12 +2,7 @@ module.exports = (sequelize, Sequelize, user, post) => {
   const Comments = sequelize.define(
     'comments',
     {
-      message: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        required: true,
-      },
-      image: {
+      comment: {
         type: Sequelize.STRING,
         allowNull: false,
         required: true,
@@ -34,7 +29,7 @@ module.exports = (sequelize, Sequelize, user, post) => {
       },
     },
     {
-      tableName: 'comments',
+      tableName: 'Comments',
       freezeTableName: true,
     }
   );

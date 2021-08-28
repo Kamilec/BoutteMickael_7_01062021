@@ -1,3 +1,4 @@
+// Création du serveur
 const http = require('http'); //Permet d'utiliser le serveur http
 const app = require('./app');
 
@@ -41,7 +42,8 @@ const errorHandler = (error) => {
 const server = http.createServer(app); //Construction du serveur avec le protocol http et en utilisant app.js
 
 server.on('error', errorHandler); //lance le gestionnaire d'erreurs
-server.on('listening', () => { //lance le serveur et affiche les infos de connexion dans la console
+server.on('listening', () => {
+  //lance le serveur et affiche les infos de connexion dans la console
   const address = server.address();
   const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
   console.log('Listening on ' + bind);

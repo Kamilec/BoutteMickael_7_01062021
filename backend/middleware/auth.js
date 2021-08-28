@@ -5,17 +5,14 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1]; //Extraction du token de la requête
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); //Décryptage token grâce à la clé secrète
     const userId = decodedToken.userId;
-    if (req.body.userId && req.body.userId !== userId) {
-      throw 'Echec de l\'hautentification'; //Renvoie une erreur si l'id décodée de la requête ne correspond pas l'id de l'utilisateur
+    console.log(userId);
+    console.log(decodedToken);
+    if (parseInt(req.body.userId) !== userId) {
+      return res.status(401).json({ error: 'ID utilisateur non valable !' });
     } else {
-       console.log();
-       console.log('Authentification réussie');
-       console.log();
-      next(); //Authentification réussie et la suite du code peut s'exécuter
+      next();
     }
-  } catch {
-    res.status(401).json({
-      error: new Error('Autenthification impossible!'),
-    });
+  } catch (error) {
+    res.status(401).json({ error: error | 'Requête non authentifiée !' });
   }
 };

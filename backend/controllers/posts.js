@@ -1,15 +1,55 @@
+const fs = require('fs');
 const db = require('../models/');
 const User = db.users;
 const Posts = db.posts;
 const Comment = db.comments;
-const Op = db.Sequelize.Op;
 
-//Création d'une publication
+
+// Récupération de tous les posts
+exports.getAllsPosts = (req, res, next) => {
+  Posts.findAll({
+    include: [{
+      model: Comment,
+    as: 'comments'}],
+    order: [['createdAt', 'DESC']],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Une erreur s'est produite lors de la récupération",
+      });
+    });
+};
+
+// Récupération d'un seul post
+exports.getOnePost = (req, res, next) => {
+  const id = req.params.id;
+  Posts.findByPk(id)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Problème de récupération du commentaire avec l'id=" + id,
+      });
+    });
+};
+
+// Création d'un post
 exports.createPost = (req, res, next) => {
+   let image = '';
+
+   if (req.file) {
+     image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+   }
   const post = {
-    message: req.body.message,
+    title: req.body.title,
+    content: req.body.content,
     userId: req.body.userId,
-    image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    image: req.body.image
   };
   Posts.create(post)
     .then((post) => {
@@ -19,101 +59,45 @@ exports.createPost = (req, res, next) => {
       res.status(500).send({
         message:
           err.message ||
-          "Une erreur s'est produite lors de la création de la publication",
+          "Une erreur s'est produite lors de la création de l'article ",
       });
     });
 };
 
-//Modification d'une publication
-exports.modifyPost = (req, res, next) => {
-  const id = req.params.id;
-  const modification = req.file
-    ? {
-        message: req.body.message,
-        userId: req.body.userId,
-        image: `${req.protocol}://${req.get('host')}/images/${
-          req.file.filename
-        }`,
-      }
-    : {
-        message: req.body.message,
-        userId: req.body.userId,
-      };
-
-  Posts.update(modification, {
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: "La publication est modifiée",
-        });
-      } else {
-        res.send({
-          message: `Update impossible pour la publication id=${id}.`,
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Erreur lors de maj de la publication id=" + id,
-      });
-    });
+// Update d'un post
+exports.updatePost = (req, res) => {
+    const postId = req.params.id;
+    Posts.findOne({ where: {id: postId }})
+        .then(post => {
+            post.update( {...req.body, id : req.params.id})
+            .then(() => res.status(200).json({ message: 'Votre post a bien été modifié !'}))
+            .catch(error => res.status(400).json({error}));
+        }).catch(
+            error => res.status(500).json({ error })
+        )
 };
 
-//Suppresion d'une publication
+// Suppression d'un post
 exports.deletePost = (req, res, next) => {
   const id = req.params.id;
-  Posts.destroy({
-    where: { id: id },
-  })
-    .then((num) => {
-      if (num == 1) {
-        res.send({
-          message: 'Publication supprimée!',
-        });
-      } else {
-        res.send({
-          message: `Suppression de la publication id=${id} impossbile.`,
-        });
-      }
+  Posts.findByPk(id, { include: 'user' })
+    .then((post) => {
+        if (post.image) {
+          const filename = post.image.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => {
+            Posts.destroy({ where: { id: id } })
+              .then(() => res.status(200).json({ message: 'Post supprimé !' }))
+              .catch((error) => res.status(400).json({ error }));
+          });
+        } else {
+          Post.destroy({ where: { id: id } })
+            .then(() => res.status(200).json({ message: 'Post supprimé !' }))
+            .catch((error) => res.status(400).json({ error }));
+        }
     })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Erreur lors de la suppression de la publication id=" + id,
-      });
-    });
-};
-
-//Récupération d'une publication
-exports.getOnePost = (req, res, next) => {
-  const id = req.params.id;
-  Articles.findByPk(id)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: "Problème de récupération de la publication id=" + id,
-      });
-    });
-};
-
-//Récupération de toutes les publications
-exports.findAllPosts = (req, res, next) => {
-  Posts.findAll({
-    include: [{ model: User }],
-    order: [
-      ['updatedAt', 'DESC'],
-      ['createdAt', 'DESC'],
-    ],
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'Erreur lors de la récupération des publications',
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
       });
     });
 };
