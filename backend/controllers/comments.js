@@ -1,5 +1,6 @@
 const db = require('../models/');
 const Comments = db.comments;
+const User = db.users;
 
 
 // Récupération de tous les commentaires

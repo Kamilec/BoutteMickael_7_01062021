@@ -5,11 +5,7 @@ module.exports = (sequelize, Sequelize, user) => {
       title: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      likes: {
-        type: Sequelize.INTEGER,
-        unsigned: true,
-        default: 0,
+        required: true,
       },
       content: {
         type: Sequelize.STRING,
@@ -20,6 +16,11 @@ module.exports = (sequelize, Sequelize, user) => {
         type: Sequelize.STRING,
         allowNull: false,
         required: true,
+      },
+      likes: {
+        type: Sequelize.INTEGER,
+        unsigned: true,
+        default: 0,
       },
       userId: {
         type: Sequelize.INTEGER(11),
@@ -43,5 +44,6 @@ module.exports = (sequelize, Sequelize, user) => {
     }
   );
   Posts.belongsTo(user, { foreignKey: 'userId', onDelete: 'cascade' });
+  //Posts.hasMany(comment ,{ foreignKey: 'postId', onDelete: 'cascade' });
   return Posts;
 };

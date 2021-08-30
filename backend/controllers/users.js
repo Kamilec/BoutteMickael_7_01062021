@@ -88,20 +88,22 @@ exports.login = (req, res, next) => {
           })
           .catch(error => res.status(500).json({ error  }));
       }
-
     })
     .catch(error => res.status(500).json({ error : 'Aucun utilisateur enregistré avec cet email' }));
 };
 
 // Récupération tous utilisateurs
 exports.getAllUsers = (req, res, next) => {
-  User.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving users.',
+  console.log(user);
+  User.findAll()
+  .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((error) => {
+      res.status(404).json({
+        error: error,
       });
-    else res.send(data);
-  });
+    });
 };
 
 

@@ -3,23 +3,24 @@ const db = require('../models/');
 const User = db.users;
 const Posts = db.posts;
 const Comment = db.comments;
+const Op = db.Sequelize.Op;
 
 
 // Récupération de tous les posts
 exports.getAllsPosts = (req, res, next) => {
   Posts.findAll({
-    include: [{
-      model: Comment,
-    as: 'comments'}],
-    order: [['createdAt', 'DESC']],
+    include: [{model: User},{ model: Comment }],
+    order: [
+      ['updatedAt', 'DESC'],
+      ['createdAt', 'DESC'],
+    ],
   })
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Une erreur s'est produite lors de la récupération",
+        message: err.message || 'Erreur lors de la récupération des posts',
       });
     });
 };
@@ -40,16 +41,14 @@ exports.getOnePost = (req, res, next) => {
 
 // Création d'un post
 exports.createPost = (req, res, next) => {
-   let image = '';
-
-   if (req.file) {
-     image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-   }
   const post = {
     title: req.body.title,
     content: req.body.content,
+    //comment : req.body.comment,
     userId: req.body.userId,
-    image: req.body.image
+    like: 0,
+    image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+    //image: req.body.image,
   };
   Posts.create(post)
     .then((post) => {

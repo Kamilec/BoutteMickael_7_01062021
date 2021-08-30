@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     const userId = decodedToken.userId;
     console.log(userId);
     console.log(decodedToken);
-    if (parseInt(req.body.userId) !== userId) {
+    if (req.body.userId && req.body.userId !== userId) {
       return res.status(401).json({ error: 'ID utilisateur non valable !' });
     } else {
       next();
