@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize, user, post) => {
         requierd: true,
       },
       userId: {
-        type: Sequelize.INTEGER(11),
+        type: Sequelize.INTEGER(11), 
         allowNull: false,
         requierd: true,
       },
@@ -34,9 +34,6 @@ module.exports = (sequelize, Sequelize, user, post) => {
     }
   );
   Comments.belongsTo(user, { foreignKey: 'userId', onDelete: 'cascade' });
-  Comments.belongsTo(post, {
-    foreignKey: 'postId',
-    onDelete: 'cascade',
-  });
+  Comments.belongsTo(post, { foreignKey: 'postId', onDelete: 'cascade', });
   return Comments;
 };

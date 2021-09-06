@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Groupomania" content="Reseau social d'entreprise">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+        integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./media.css">
+
+    <title>Groupomania</title>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <nav>
+            <img class="formatImg" src="./logos/logoGM.png" alt="Logo Groupomania">
+            <div class="header-buttons">
+                <button (click)="onCreate()" class="control-buttons"><i class="fas fa-plus"></i> Create new
+                    post</button>
+                <button (click)="onLogout()" class="control-buttons"><i class="fas fa-sign-out-alt"></i>Logout</button>
+            </div>
+        </nav>
+    </header>
+    <!-- HEADER -->
+
+    <!-- MAIN -->
+    <main>
+        <section>
+            <div class="groupPublication">
+                <div class="publication">
+                    <div class="publie-container">
+                        <div class="form-group">
+                            <a href="./onepublication.html">
+                                <h2 class="publie-name">{{ publie?.name }}</h2>
+                            </a>
+                            <h3>Description</h3>
+                            <p>{{ publie.description }}</p>
+                            <img [src]="publie?.imageUrl" alt="">
+                        </div>
+
+                        <div class="like-buttons">
+                            <div class="likes">
+                                <i [ngClass]="{ 'fas liked': liked, 'far': !liked, 'disabled': disliked }"
+                                    class="like fa-thumbs-up fa-lg" (click)="onLike()"></i>
+                                <span>{{ publie.likes }}</span>
+                            </div>
+                            <div class="dislikes">
+                                <i [ngClass]="{ 'fas disliked': disliked, 'far': !disliked, 'disabled': liked }"
+                                    class="dislike fa-thumbs-down fa-lg" (click)="onDislike()"></i>
+                                <span>{{ publie.dislikes }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ASIDE -->
+                <aside class="userInfo">
+                    <div class="control-buttons">
+                        <img [src]="user?.imageUrl" alt="">
+                        <div class="user-info">
+                            <h3>User info</h3>
+                            <p>{{ user.pseudo }}</p>
+                            <p>{{ user.email }}</p>
+                        </div>
+                        <button (click)="onEdit()" class="control-buttons"><i class="fas fa-user-edit"></i> Edit
+                            profil</button>
+                    </div>
+                </aside>
+                <!-- ASIDE -->
+
+            </div>
+        </section>
+    </main>
+    <!-- MAIN -->
+
+    <!-- FOOTER -->
+    <footer>
+        <div>© 2021 Copyright:
+            <a href="https://groupomania.com/"> Groupomania.com</a>
+        </div>
+    </footer>
+    <!-- FOOTER -->
+
+
+</body>
+
+</html>

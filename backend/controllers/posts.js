@@ -9,7 +9,7 @@ const Op = db.Sequelize.Op;
 // Récupération de tous les posts
 exports.getAllsPosts = (req, res, next) => {
   Posts.findAll({
-    include: [{model: User},{ model: Comment }],
+    include: ['comments'],
     order: [
       ['updatedAt', 'DESC'],
       ['createdAt', 'DESC'],
@@ -28,7 +28,7 @@ exports.getAllsPosts = (req, res, next) => {
 // Récupération d'un seul post
 exports.getOnePost = (req, res, next) => {
   const id = req.params.id;
-  Posts.findByPk(id)
+  Posts.findByPk(id, {include: 'comments'})
     .then((data) => {
       res.send(data);
     })
@@ -89,7 +89,7 @@ exports.deletePost = (req, res, next) => {
               .catch((error) => res.status(400).json({ error }));
           });
         } else {
-          Post.destroy({ where: { id: id } })
+          Posts.destroy({ where: { id: id } })
             .then(() => res.status(200).json({ message: 'Post supprimé !' }))
             .catch((error) => res.status(400).json({ error }));
         }

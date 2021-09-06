@@ -2,7 +2,7 @@ const passwordSchema = require('../models/Password-Validator'); // Importation d
 
 module.exports = (req, res, next) => { // Vérification que le mot de passe respecte le schéma et envoie un message si c'est incorrect
   if (!passwordSchema.validate(req.body.password)) {
-    res.writeHead(400,'Format du mot de passe requis : entre 8 et 100 caracteres, sans espaces et 2 chiffres minimum."}',
+    res.writeHead(400,'Format du mot de passe requis : entre 8 et 100 caractères, sans espaces et 2 chiffres minimum."}',
       {
         'content-type': 'application/json',
       }

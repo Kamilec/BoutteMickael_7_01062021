@@ -12,6 +12,10 @@ module.exports = (sequelize, Sequelize) => {
     password: {
       type: Sequelize.STRING(64),
     },
+    avatar: {
+      type: Sequelize.STRING,
+      default: 'http://localhost:3000/images/defaultUser.jpg' 
+    },
     role: {
       type: Sequelize.STRING,
     },

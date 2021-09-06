@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Groupomania" content="Reseau social d'entreprise">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+        integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./media.css">
+
+    <title>Create Publication</title>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <nav>
+            <img class="formatImg" src="./logos/logoGM.png" alt="Logo Groupomania">
+            <div>
+                <a href="./index.html"><button (click)="onBack()" class="control-buttons"><i
+                            class="fas fa-arrow-left"></i></button></a>
+            </div>
+        </nav>
+    </header>
+    <!-- HEADER -->
+
+    <!-- NEW PUBLICATION -->
+    <main>
+        <div class="publie-container">
+            <div class="publie-info">
+                <input type="file" accept="image/*" #imageInput (change)="onFileAdded($event)">
+                <h3>Name publication</h3>
+                <p> {{publie.name}} </p> <br>
+                <h3>Description</h3>
+                <p>{{ publie.description }}</p>
+                <img [src]="publie?.imageUrl" alt="">
+                <div class="control-buttons">
+                    <button (click)="onSubmit()" [disabled]="publieForm.invalid"> <iclass="fas fa-share-square"></i>Submit</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- NEW PUBLICATION -->
+
+    <!-- FOOTER -->
+    <footer>
+        <div>© 2021 Copyright:
+            <a href="https://groupomania.com/"> Groupomania.com</a>
+        </div>
+    </footer>
+    <!-- FOOTER -->
+</body>
+
+</html>

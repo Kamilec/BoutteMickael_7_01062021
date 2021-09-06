@@ -44,6 +44,5 @@ module.exports = (sequelize, Sequelize, user) => {
     }
   );
   Posts.belongsTo(user, { foreignKey: 'userId', onDelete: 'cascade' });
-  //Posts.hasMany(comment ,{ foreignKey: 'postId', onDelete: 'cascade' });
   return Posts;
 };

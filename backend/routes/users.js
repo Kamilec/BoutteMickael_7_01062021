@@ -6,10 +6,9 @@ const auth = require('../middleware/auth');
 const users = require('../controllers/users');
 
 //Liage des routes aux controllers
-router.post('/signup',strongPassword, multer, users.signup); // Création profil utilisateur
+router.post('/signup', strongPassword, multer, users.signup); // Création profil utilisateur
 router.post('/login', users.login); // Connexion profil utilisateur
 router.get('/:id', auth, users.getOneUser); // Récupération profil utilisateur
-router.get('/all'), auth, users.getAllUsers; // Récupération des profils utilisateurs
 router.put('/update/:id', auth, multer, users.updateUser); // MAJ profil utilisateur
 router.delete('/delete/:id', auth, multer, users.deleteUser); // Suppression profil utilisateur
 

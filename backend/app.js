@@ -44,7 +44,7 @@ app.use('/images', express.static(path.join(__dirname, 'images'))); //Middleware
 
 //Connexion à la base de données MySql
 const db = require('./models');
-//db.sequelize.sync(); 
+//db.sequelize.sync();
 db.sequelize.sync({ force: true });
 
 // Middleware qui va permettre la transimission des requêtes vers ces url aux routes correspondantes

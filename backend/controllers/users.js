@@ -5,8 +5,7 @@ const fs = require('fs');
 
 const db = require('../models/');
 const User = db.users;
-const Comments = db.comments;
-const Posts = db.posts
+const Posts = db.posts;
 
 //Masquage de l'email
 const emailMask2Options = {
@@ -20,58 +19,47 @@ const emailMask2Options = {
 
 // Création utilisateur
 exports.signup = (req, res, next) => {
-  const pseudo = req.body.pseudo;
-  const email = req.body.email;
-  const password = req.body.password;
-  let role = "";
-  if (req.body.email === "admin@groupomania.com"){
-    role = "admin"
-  }else {
-    role = "user"
+  let role = '';
+  if (req.body.email === 'admin@groupomania.com') {
+    role = 'admin';
+  } else {
+    role = 'user';
   }
-   User.findOne({
-     attributes: ['email'],
-     where: { email: email },
-   })
-     .then((userFound) => {
-       if (!userFound) {
-         bcrypt.hash(password, 10).then((hash) => {
-           const user = new User({
-             pseudo: pseudo,
-             email: email,
-             /*imageProfil: `${req.protocol}://${req.get('host')}/images/${
-               req.file.filename
-             }`,*/
-             password: hash,
-             role: role,
-           });
-           user
-             .save()
-             .then(() =>
-               res.status(201).json({ message: 'Utilisateur créé !' })
-             )
-             .catch((error) => res.status(400).json({ error }));
-         });
-       } else if (userFound) {
-         return res.status(409).json({ error: "L'utilisateur existe déjà !" });
-       }
-     })
-     .catch((error) => res.status(500).json({ error }));
+  bcrypt.hash(req.body.password, 10).then((hash) => {
+    const user = {
+      pseudo: req.body.pseudo,
+      email: MaskData.maskEmail2(req.body.email, emailMask2Options),
+      avatar: 'http://localhost:3000/images/defaultUser.jpg',
+      role: role,
+      password: hash,
+    };
+    User.create(user)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message ||
+            "Une erreur s'est produite lors de la création de l'utilisateur.",
+        });
+      });
+  });
 };
-
-
+           
 // Connexion utilisateur
 exports.login = (req, res, next) => {
   User.findOne({
-    where: { email: req.body.email }
+    where: { email: MaskData.maskEmail2(req.body.email, emailMask2Options) },
   })
     .then((user) => {
       console.log(user.id);
       if (!user) {
         return res.status(401).json({ error });
       } else {
-        bcrypt.compare(req.body.password, user.password)
-          .then(valid => {
+        bcrypt
+          .compare(req.body.password, user.password)
+          .then((valid) => {
             if (!valid) {
               return res.status(401).json({ error: 'Mot de passe erroné !' });
             } else {
@@ -79,33 +67,22 @@ exports.login = (req, res, next) => {
                 userId: user.id,
                 role: user.role,
                 pseudo: user.pseudo,
-                token: jwt.sign(
-                  { userId: user.id },
-                  'RANDOM_TOKEN_SECRET',
-                  { expiresIn: "24h"}),
+                avatar: user.avatar,
+                token: jwt.sign({ userId: user.id }, 'RANDOM_TOKEN_SECRET', {
+                  expiresIn: '24h',
+                }),
               });
             }
           })
-          .catch(error => res.status(500).json({ error  }));
+          .catch((error) => res.status(500).json({ error }));
       }
     })
-    .catch(error => res.status(500).json({ error : 'Aucun utilisateur enregistré avec cet email' }));
+    .catch((error) =>
+      res
+        .status(500)
+        .json({ error: 'Aucun utilisateur enregistré avec cet email' })
+    );
 };
-
-// Récupération tous utilisateurs
-exports.getAllUsers = (req, res, next) => {
-  console.log(user);
-  User.findAll()
-  .then((user) => {
-      res.status(200).json(user);
-    })
-    .catch((error) => {
-      res.status(404).json({
-        error: error,
-      });
-    });
-};
-
 
 // Récupération utilisateur
 exports.getOneUser = (req, res, next) => {
@@ -129,8 +106,8 @@ exports.updateUser = (req, res, next) => {
   const userObject = req.file
     ? {
         ...req.body.userId,
-        //image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-        image: req.body.image,
+        image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        //image: req.body.image,
       }
     : { ...req.body };
   User.update(
@@ -143,26 +120,41 @@ exports.updateUser = (req, res, next) => {
 
 // Suppression profil utilisateur
 exports.deleteUser = (req, res, next) => {
-  Comments.destroy({ where: { userId: req.params.id } })
-    .then(() =>
-      Posts.findAll({ where: { userId: req.params.id } })
-        .then((posts) => {
-          posts.forEach((post) => {
-            Comments.destroy({ where: { postId: post.id } });
-            Posts.destroy({ where: { id: post.id } });
+  const id = req.params.id;
+    Posts.findAll({ where: { userId: id } }).then((posts) => {
+      posts.forEach((post) => {
+        if (post.image != '') {
+          const filename = post.image.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => {
+            Posts.destroy({ where: { id: post.id } }).catch((error) =>
+              res.status(400).json({ error })
+            );
           });
-        })
-        .then(() =>
-          User.findOne({ where: { id: req.params.id } }).then((user) => {
-            const filename = user.image;
-            fs.unlink(`images/${filename}`, () => {
-              User.destroy({ where: { id: req.params.id } }).then(() =>
+        } else {
+          Posts.destroy({ where: { id: post.id } }).catch((error) =>
+            res.status(400).json({ error })
+          );
+        }
+      });
+      User.findOne({
+        where: { id: req.params.id },
+      }).then((user) => {
+        if (user.image != null) {
+          const filename = user.image.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => {
+            User.destroy({ where: { id: req.params.id } })
+              .then(() =>
                 res.status(200).json({ message: 'Utilisateur supprimé !' })
-              );
-            });
-          })
-        )
-    )
-
-    .catch((error) => res.status(400).json({ error }));
+              )
+              .catch((error) => res.status(400).json({ error }));
+          });
+        } else {
+          User.destroy({ where: { id: req.params.id } })
+            .then(() =>
+              res.status(200).json({ message: 'Utilisateur supprimé !' })
+            )
+            .catch((error) => res.status(400).json({ error }));
+        }
+      });
+    });
 };

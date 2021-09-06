@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Groupomania" content="Reseau social d'entreprise">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+        integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./media.css">
+
+    <title>One publication</title>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <nav>
+            <img class="formatImg" src="./logos/logoGM.png" alt="Logo Groupomania">
+            <div>
+                <a href="./index.html"><button (click)="onBack()" class="control-buttons"><i
+                            class="fas fa-arrow-left"></i></button></a>
+            </div>
+        </nav>
+    </header>
+    <!-- HEADER -->
+
+    <!-- ONE PUBLICATION -->
+    <main>
+        <div class="publie-container">
+            <img [src]="publie?.imageUrl" alt="">
+            <div class="publie-info">
+                <h1 class="publie-name">{{ publie?.name }}</h1>
+                <h3>Description</h3>
+                <p>{{ publie.description }}</p>
+                <div class="like-buttons">
+                    <div class="likes">
+                        <i [ngClass]="{ 'fas liked': liked, 'far': !liked, 'disabled': disliked }"
+                            class="like fa-thumbs-up fa-lg" (click)="onLike()"></i>
+                        <span>{{ publie.likes }}</span>
+                    </div>
+                    <div class="dislikes">
+                        <i [ngClass]="{ 'fas disliked': disliked, 'far': !disliked, 'disabled': liked }"
+                            class="dislike fa-thumbs-down fa-lg" (click)="onDislike()"></i>
+                        <span>{{ publie.dislikes }}</span>
+                    </div>
+                </div>
+                <div class="like-pending">
+                </div>
+                <div class="control-buttons">
+                    <button (click)="onModify()" *ngIf="userId === publie.userId"><i class="fas fa-edit">
+                            Edit</i></button>
+                    <button (click)="onDelete()" *ngIf="userId === publie.userId"><i class="fas fa-trash-alt">
+                            Delete</i></button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- ONE PUBLICATION -->
+
+
+    <!-- FOOTER -->
+    <footer>
+        <div>© 2021 Copyright:
+            <a href="https://groupomania.com/"> Groupomania.com</a>
+        </div>
+    </footer>
+    <!-- FOOTER -->
+</body>
+
+</html>
