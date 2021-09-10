@@ -7,9 +7,9 @@ const routes = [
     component: () => import('../views/Login'),
   },
   {
-    name: 'inscription',
-    path: '/inscription',
-    component: () => import('../views/Inscription'),
+    name: 'signup',
+    path: '/signup',
+    component: () => import('../views/Signup'),
   },
   {
     name: 'profile',

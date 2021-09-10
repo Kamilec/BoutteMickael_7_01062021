@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     avatar: {
       type: Sequelize.STRING,
-      default: 'http://localhost:3000/images/defaultUser.jpg' 
+      default: null,
     },
     role: {
       type: Sequelize.STRING,

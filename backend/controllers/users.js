@@ -10,12 +10,12 @@ const Posts = db.posts;
 //Masquage de l'email
 const emailMask2Options = {
   maskWith: '*',
-  unmaskedStartCharactersBeforeAt: 0,
-  unmaskedEndCharactersAfterAt: 0,
+  unmaskedStartCharactersBeforeAt: 3,
+  unmaskedEndCharactersAfterAt: 2,
   maskAtTheRate: false,
 };
 
-//Output: ********@**********
+//Output: xxx*****@********xx
 
 // Création utilisateur
 exports.signup = (req, res, next) => {
@@ -29,7 +29,6 @@ exports.signup = (req, res, next) => {
     const user = {
       pseudo: req.body.pseudo,
       email: MaskData.maskEmail2(req.body.email, emailMask2Options),
-      avatar: 'http://localhost:3000/images/defaultUser.jpg',
       role: role,
       password: hash,
     };
@@ -46,7 +45,7 @@ exports.signup = (req, res, next) => {
       });
   });
 };
-           
+
 // Connexion utilisateur
 exports.login = (req, res, next) => {
   User.findOne({
@@ -106,14 +105,28 @@ exports.updateUser = (req, res, next) => {
   const userObject = req.file
     ? {
         ...req.body.userId,
-        image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-        //image: req.body.image,
+        avatar: `${req.protocol}://${req.get('host')}/images/${
+          req.file.filename
+        }`,
       }
     : { ...req.body };
-  User.update(
-    { ...userObject, id: req.params.id },
-    { where: { id: req.params.id } }
-  )
+  User.findOne({
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((user) => {
+      if (user.avatar != null) {  
+        const filename = user.avatar.split('/images/')[1];
+        return fs.unlinkSync(`images/${filename}`); 
+      }
+    })
+    .then(() =>
+      User.update(
+        { ...userObject, id: req.params.id },
+        { where: { id: req.params.id } }
+      )
+    )
     .then(() => res.status(200).json({ ...userObject }))
     .catch((error) => res.status(400).json({ error }));
 };
@@ -121,40 +134,40 @@ exports.updateUser = (req, res, next) => {
 // Suppression profil utilisateur
 exports.deleteUser = (req, res, next) => {
   const id = req.params.id;
-    Posts.findAll({ where: { userId: id } }).then((posts) => {
-      posts.forEach((post) => {
-        if (post.image != '') {
-          const filename = post.image.split('/images/')[1];
-          fs.unlink(`images/${filename}`, () => {
-            Posts.destroy({ where: { id: post.id } }).catch((error) =>
-              res.status(400).json({ error })
-            );
-          });
-        } else {
+  Posts.findAll({ where: { userId: id } }).then((posts) => {
+    posts.forEach((post) => {
+      if (post.image != '') {
+        const filename = post.image.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
           Posts.destroy({ where: { id: post.id } }).catch((error) =>
             res.status(400).json({ error })
           );
-        }
-      });
-      User.findOne({
-        where: { id: req.params.id },
-      }).then((user) => {
-        if (user.image != null) {
-          const filename = user.image.split('/images/')[1];
-          fs.unlink(`images/${filename}`, () => {
-            User.destroy({ where: { id: req.params.id } })
-              .then(() =>
-                res.status(200).json({ message: 'Utilisateur supprimé !' })
-              )
-              .catch((error) => res.status(400).json({ error }));
-          });
-        } else {
+        });
+      } else {
+        Posts.destroy({ where: { id: post.id } }).catch((error) =>
+          res.status(400).json({ error })
+        );
+      }
+    });
+    User.findOne({
+      where: { id: req.params.id },
+    }).then((user) => {
+      if (user.image != null) {
+        const filename = user.image.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
           User.destroy({ where: { id: req.params.id } })
             .then(() =>
               res.status(200).json({ message: 'Utilisateur supprimé !' })
             )
             .catch((error) => res.status(400).json({ error }));
-        }
-      });
+        });
+      } else {
+        User.destroy({ where: { id: req.params.id } })
+          .then(() =>
+            res.status(200).json({ message: 'Utilisateur supprimé !' })
+          )
+          .catch((error) => res.status(400).json({ error }));
+      }
     });
+  });
 };
