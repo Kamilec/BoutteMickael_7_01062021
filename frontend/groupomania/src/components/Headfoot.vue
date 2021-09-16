@@ -3,15 +3,41 @@
   <header>
     <img class="logoGM" src="../assets/logoGM.png" alt="Logo Groupomania" />
     <nav>
-      <router-link class="header__nav__logos" to="/">
-        <i class="fas fa-home header__logo"></i>
+      <router-link title="Page d'accueil" class="header__nav__logos" to="/">
+        <i class="fas fa-house-user header__logo"></i>
       </router-link>
-      <router-link class="header__nav__logos" to="/aide">
-        <i class="fas fa-info header__logo"></i
-      ></router-link>
-      <router-link class="header__nav__logos" to="/profile">
-        <i class="fas fa-user header__logo"></i
-      ></router-link>
+
+      <router-link title="Page de tous les utilisateurs" class="header__nav__logos" to="/allusers">
+        <i class="fas fa-users header__logo"></i>
+      </router-link>
+
+      <router-link
+        title="Profil utilisateur"
+        class="header__nav__logos"
+        to="/profile"
+      >
+        <i class="fas fa-user header__logo"></i>
+      </router-link>
+
+      <router-link
+        title="Publier un nouveau post"
+        class="header__nav__logos"
+        to="/post"
+      >
+        <i class="fas fa-plus header__logo"></i>
+      </router-link>
+
+      <router-link
+        title="Panneau des publications"
+        class="header__nav__logos"
+        to="/posted"
+      >
+        <i class="fas fa-chalkboard-teacher header__logo"></i>
+      </router-link>
+
+      <router-link title="Deconnexion" class="header__nav__logos" to="/logout">
+        <i class="fas fa-door-open header__logo"></i>
+      </router-link>
     </nav>
   </header>
   <footer>
@@ -22,6 +48,14 @@
 <script>
   export default {
     name: 'Headfoot',
+
+    /*     data() {
+      return {
+        user: '',
+        userId: localStorage.getItem('userId'),
+        token: localStorage.getItem('token'),
+      };
+    }, */
   };
 </script>
 

@@ -23,6 +23,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
+    max-width: 1440px;
+    margin: auto;
+    padding: 10px;
+    box-sizing: border-box;
   }
 
   * {
@@ -30,18 +34,20 @@
     box-sizing: border-box;
   }
 
+  html {
+    position: relative;
+    min-height: 100%;
+  }
+
   body {
     background-image: url('./assets/Screenshot_1.jpg');
-    background-repeat: no-repeat;
-    background-size: 2450px;
     opacity: 0.95;
-    margin: 2%;
     font-family: 'roboto-regular', sans-serif;
     text-align: center;
-    max-width: 1440px;
-    margin: auto;
-    padding: 1px 15px;
     box-sizing: border-box;
+    min-height: 100%;
+    margin: 0;
+    width: 100%;
   }
 
   a {
@@ -50,15 +56,15 @@
     font-weight: bolder;
   }
 
-  p {
-    color: white;
-  }
-
-  h1 {
+  p, figcaption {
     color: whitesmoke;
   }
 
-  h3 {
+  h1, h2, h4  {
+    color: whitesmoke;
+  }
+
+  h3{
     color: whitesmoke;
     font-style: italic;
   }
@@ -84,8 +90,6 @@
   }
 
   nav {
-    display: flex;
-    align-items: center;
     grid-area: navbar;
   }
 
@@ -123,9 +127,7 @@
     border-radius: 50px;
   }
 
-  button,
-  #log-in,
-  #sign-up {
+  .all-buttons {
     display: inline-block;
     color: #252537;
     width: 190px;
@@ -162,6 +164,10 @@
     }
   }
 
+  .other__page__logo {
+    font-size: 15px;
+  }
+
   .header__logo {
     font-size: 30px;
   }
@@ -173,8 +179,12 @@
   .card {
     border: solid 1px white;
     background: linear-gradient(-225deg, #d15159 50%, #142543 50%);
-    position: relative;
-    top: 170px;
+    margin-top: 25px;
+  }
+
+  .card-info {
+    margin: 10px;
+    background: transparent;
   }
 
   .card__action {
@@ -204,35 +214,50 @@
     font-weight: 600;
   }
 
-  .login__submit, .signup__submit {
+  .login__submit,
+  .signup__submit {
     margin-top: 40px;
   }
 
   footer {
     color: black;
     position: absolute;
-    width: 100%;
     bottom: 0;
-    left: 0;
-    margin-bottom: 10px;
-    text-align: center;
-    font-weight: bolder;
+    height: 0px;
+    font-size: 15px;
   }
-
+  
   @media screen and (max-width: 600px) {
-    header {
+    header,
+    .text_logo {
       grid-template-columns: auto 1fr auto;
       grid-template-areas:
         'logo . button'
         'navbar navbar navbar';
-      display: inherit;
-    }
-    nav {
-      grid-area: navbar;
-      justify-content: space-around;
     }
     .header__nav__logos {
-      margin-top: -150px;
+      margin-top: -80px;
+    }
+    #survey {
+      display: inline-grid;
+      position: relative;
+      top: 100px;
+    }
+  }
+
+  @media screen and (min-width: 320px) and (max-width: 434px) {
+    #survey {
+      display: inline-grid;
+      position: relative;
+      top: 1px;
+    }
+  }
+
+  @media screen and (min-width: 435px) and (max-width: 599px) {
+    #survey {
+      display: inline-grid;
+      position: relative;
+      top: -100px;
     }
   }
 </style>

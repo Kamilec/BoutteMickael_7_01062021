@@ -52,7 +52,6 @@ exports.login = (req, res, next) => {
     where: { email: MaskData.maskEmail2(req.body.email, emailMask2Options) },
   })
     .then((user) => {
-      console.log(user.id);
       if (!user) {
         return res.status(401).json({ error });
       } else {
@@ -63,11 +62,11 @@ exports.login = (req, res, next) => {
               return res.status(401).json({ error: 'Mot de passe erroné !' });
             } else {
               res.status(200).json({
-                userId: user.id,
+                userId: user.id, 
                 role: user.role,
                 pseudo: user.pseudo,
                 avatar: user.avatar,
-                token: jwt.sign({ userId: user.id }, 'RANDOM_TOKEN_SECRET', {
+                token: jwt.sign({ userId: user.id, role: user.role }, 'RANDOM_TOKEN_SECRET', {
                   expiresIn: '24h',
                 }),
               });
@@ -86,7 +85,7 @@ exports.login = (req, res, next) => {
 // Récupération utilisateur
 exports.getOneUser = (req, res, next) => {
   User.findOne({
-    where: {
+    where: {  
       id: req.params.id,
     },
   })
@@ -100,31 +99,47 @@ exports.getOneUser = (req, res, next) => {
     });
 };
 
+// Récupération utilisateur
+exports.getAllUsers = (req, res, next) => {
+  console.log('getAllUsers');
+  User.findAll()
+    .then((users) => {
+      res.status(200).json(users);
+      console.log(users);
+    })
+    .catch((error) => {
+      res.status(404).json({
+        error: error,
+      });
+    });
+};
+
 // logique métier : modifier un utilisateur
 exports.updateUser = (req, res, next) => {
+  const id = req.decoded.role === 'admin' ? req.headers.userid : req.decoded.userId;
   const userObject = req.file
     ? {
-        ...req.body.userId,
+        id : id,
         avatar: `${req.protocol}://${req.get('host')}/images/${
           req.file.filename
         }`,
       }
-    : { ...req.body };
+    : { ...req.body,};
   User.findOne({
     where: {
-      id: req.params.id,
+      id: id,
     },
   })
     .then((user) => {
-      if (user.avatar != null) {  
+      if (user.avatar != null && userObject.avatar != null) {  
         const filename = user.avatar.split('/images/')[1];
         return fs.unlinkSync(`images/${filename}`); 
       }
     })
     .then(() =>
       User.update(
-        { ...userObject, id: req.params.id },
-        { where: { id: req.params.id } }
+        userObject,
+        { where: { id: id } }
       )
     )
     .then(() => res.status(200).json({ ...userObject }))
@@ -133,11 +148,11 @@ exports.updateUser = (req, res, next) => {
 
 // Suppression profil utilisateur
 exports.deleteUser = (req, res, next) => {
-  const id = req.params.id;
+  const id = req.decoded.role === 'admin' ? req.headers.userid : req.decoded.userId;
   Posts.findAll({ where: { userId: id } }).then((posts) => {
     posts.forEach((post) => {
       if (post.image != '') {
-        const filename = post.image.split('/images/')[1];
+        const filename = post.imageUrl.split('/images/')[1];
         fs.unlink(`images/${filename}`, () => {
           Posts.destroy({ where: { id: post.id } }).catch((error) =>
             res.status(400).json({ error })
@@ -150,19 +165,19 @@ exports.deleteUser = (req, res, next) => {
       }
     });
     User.findOne({
-      where: { id: req.params.id },
+      where: { id: id },
     }).then((user) => {
       if (user.image != null) {
         const filename = user.image.split('/images/')[1];
         fs.unlink(`images/${filename}`, () => {
-          User.destroy({ where: { id: req.params.id } })
+          User.destroy({ where: { id: id } })
             .then(() =>
               res.status(200).json({ message: 'Utilisateur supprimé !' })
             )
             .catch((error) => res.status(400).json({ error }));
         });
       } else {
-        User.destroy({ where: { id: req.params.id } })
+        User.destroy({ where: { id: id } })
           .then(() =>
             res.status(200).json({ message: 'Utilisateur supprimé !' })
           )

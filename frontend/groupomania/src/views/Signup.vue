@@ -1,15 +1,11 @@
 <template>
   <div class="card">
-    <div>
-      <p class="register__intro--text">Le réseau social pour les employés !</p>
-      <router-link to="/">SE CONNECTER</router-link>
+    <div class="text_signup">
+      <h1>INSCRIVEZ-VOUS</h1>
+      <i class="far fa-hand-point-down header__logo"></i>
     </div>
     <div class="authentification__form">
-      <form
-        class="register__form"
-        method="post"
-        @submit.prevent="signup()"
-      >
+      <form class="register__form" method="post" @submit.prevent="signup()">
         <div>
           <label class="register__label" for="pseudo"></label>
           <input
@@ -20,9 +16,7 @@
             id="pseudo"
             placeholder="pseudo"
           /><br />
-          <span class="error" v-show="!pseudo"
-            >Veuillez saisir un pseudo</span
-          >
+          <span class="error" v-show="!pseudo">Veuillez saisir un pseudo</span>
         </div>
         <div>
           <label class="register__label" for="email"></label>
@@ -34,11 +28,8 @@
             id="email"
             v-model="email"
             placeholder="email"
-            
           /><br />
-          <span class="error" v-show="!email"
-            >Veuillez saisir votre email</span
-          >
+          <span class="error" v-show="!email">Veuillez saisir votre email</span>
         </div>
         <div>
           <label class="register__label" for="password"></label>
@@ -56,7 +47,9 @@
           >
         </div>
         <div class="register__button">
-          <button class="signup__submit" type="submit">CREER MON COMPTE</button>
+          <button class="all-buttons" type="submit">
+            <i class="fas fa-user-plus other__page__logo"></i> INSCRIPTION
+          </button>
         </div>
       </form>
     </div>
@@ -87,8 +80,7 @@
               avatar: this.avatar,
             })
             .then(() => {
-              alert('Connexion réussie !');
-              this.$router.push('/');
+              this.$router.push('/login');
             })
             .catch(() => {
               this.responseEmailError = true;
@@ -101,3 +93,13 @@
     },
   };
 </script>
+
+<style scoped>
+  h1 {
+    color: burlywood;
+  }
+
+  .text_signup {
+    margin-top: 10px;
+  }
+</style>

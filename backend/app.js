@@ -29,11 +29,10 @@ app.use((req, res, next) => {
     'GET, POST, PUT, DELETE, PATCH, OPTIONS'
   ); //Indication des méthodes autorisées pour les requêtes HTTP
   next();
-});
-
+}); 
 app.use(cors()); // Middleware CORS - Ajout de HEADERS à l'objet "response"
 app.use(helmet()); // Protection d'Express en définissant divers en-têtes HTTP
-app.use(hpp()); // Protection contre les attaques des paramètres HTTP  
+app.use(hpp()); // Protection contre les attaques des paramètres HTTP                  
 
 // Package body-parser 
 app.use(bodyParser.json()); // Middleware qui permet de parser les requêtes par le client (extraction de l'ojbet JSON à la demande) on peut y accèder grâce à req.body
@@ -44,7 +43,7 @@ app.use('/images', express.static(path.join(__dirname, 'images'))); //Middleware
 
 //Connexion à la base de données MySql   
 const db = require('./models');
-//db.sequelize.sync();
+//db.sequelize.sync();  
 db.sequelize.sync({ force: true });
 
 // Middleware qui va permettre la transimission des requêtes vers ces url aux routes correspondantes

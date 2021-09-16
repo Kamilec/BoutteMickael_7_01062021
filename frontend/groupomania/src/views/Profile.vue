@@ -1,56 +1,76 @@
 <template>
   <div class="card">
-    <div class="profil__info" :key="user">
-      <div class="avatar_user">
+    <div class="card card-info"> <h1>Profil utilisateur</h1></div>
+    <div class="profil__info">
+      <div class="avatar_user" >
         <img
           id="avatar-User"
           class="avatarUser"
           :src="user.avatar"
           alt="avatarUser"
         />
+        <span class="check_appear">
+          <form
+            id="survey"
+            enctype="multipart/form-data"
+            @submit.prevent="modifyAvatar()"
+          >
+            <label for="avatar" class="form-label"></label>
+            <input
+            
+              type="file"
+              class="form__input"
+              name="image"
+              id="image"
+              ref="image"
+              v-on:change="previewUpload()"
+            />
+            <button
+            
+              type="submit"
+              class="all-buttons"
+              name="submitAvatar"
+              id="submitAvatar"
+              @click.prevent="modifyAvatar"
+            >
+              <i class="far fa-image other__page__logo"> Modifier</i>
+            </button>
+          </form>
+        </span>
       </div>
-      <p>Pseudo: {{ user.pseudo }}</p>
-      <p>Email: {{ user.email }}</p>
-      <p v-if="role === 'admin'">
-        Role : Admin
-      </p>
-      <p v-else>
-        Role : User
-      </p>
+      <div class="infoUser" >
+        <p class="update-User">
+          <b>Pseudo:</b> {{ user.pseudo }}
+          <span class="check_appear">
+            <input
+              
+              class="update-user"
+              v-model="user.newPseudo"
+            />
+            <button
+             
+              title="Modifier le pseudo"
+              class="card-icon"
+              @click="updateUser(user)"
+            >
+              <i class="far fa-edit"></i>
+            </button>
+          </span>
+        </p>
+        <p><b>Role:</b> {{ user.role }}</p>
+      </div>
     </div>
-    <div v-if="userId == user.id">
-      <form
-        id="survey"
-        enctype="multipart/form-data"
-        @submit.prevent="modifyAvatar()"
+
+    <div>
+      <button
+       v-if="userId == user.id || role === 'admin'"
+        class="all-buttons"
+        v-bind="user"
+        @click.prevent="deleteUser(user.id)"
       >
-        <label for="avatar" class="form-label"></label>
-        <input
-          type="file"
-          class="form__row__input"
-          name="image"
-          id="image"
-          ref="image"
-          v-on:change="previewUpload()"
-        />
-        <button
-          type="submit"
-          class="form-control"
-          name="submitAvatar"
-          id="submitAvatar"
-          @click.prevent="modifyAvatar"
-        >
-          Update
-        </button>
-      </form>
+        <i class="fas fa-user-slash"></i> Suppression compte
+      </button>
     </div>
-    <button
-      class="profil__button"
-      v-bind="user"
-      @click.prevent="deleteUser(user.id)"
-    >
-      Supprimer votre compte
-    </button>
   </div>
 </template>
 
@@ -70,6 +90,8 @@
     },
 
     created() {
+      if (this.$route.query.userId != undefined)
+        this.userId = this.$route.query.userId;
       axios
         .get(`http://localhost:3000/user/${this.userId}`, {
           headers: { Authorization: 'Bearer ' + localStorage.token },
@@ -93,9 +115,29 @@
         formData.append('image', this.image);
         axios
           .put(`http://localhost:3000/user/update/${this.userId}`, formData, {
-            headers: { Authorization: 'Bearer ' + localStorage.token },
+            headers: {
+              Authorization: 'Bearer ' + localStorage.token,
+              userId: this.userId,
+            },
           })
           .then(() => this.$router.go());
+      },
+
+      updateUser(user) {
+        axios
+          .put(
+            `http://localhost:3000/user/update/${user.id}`,
+            { pseudo: user.newPseudo },
+            {
+              headers: {
+                Authorization: 'Bearer ' + localStorage.token,
+                userId: this.userId,
+              },
+            }
+          )
+          .then(() => {
+            this.$router.go();
+          });
       },
 
       deleteUser(id) {
@@ -104,19 +146,52 @@
             headers: {
               'Content-Type': 'application/json',
               Authorization: 'Bearer ' + localStorage.token,
+              userId: this.userId,
             },
           })
-          .then(() => this.$router.push('/logout'));
+          .then(() => {
+            if (this.$route.query.userId == undefined) {
+              this.$router.push('/logout'); 
+            } else { this.$router.push('/posted')
+            }
+          });
       },
     },
   };
-
 </script>
 
 <style scoped>
+  #survey {
+    display: inline-grid;
+    position: relative;
+    bottom: 100px;
+  }
+
   .avatarUser {
-    margin-top: 10px;
     width: 150px;
-    border-radius: 25px 25px 25px 25px;
+    clip-path: ellipse(50% 50%);
+    height: 150px;
+    object-fit: cover;
+    margin-top: 10px;
+  }
+
+  .check_appear {
+    display: none;
+    justify-content: center;
+  }
+
+  .avatar_user:hover .check_appear {
+    display: inline-grid;
+  }
+
+  .update-User:hover .check_appear {
+    display: inline-grid;
+    display: contents;
+  }
+
+  a {
+    color: #252537;
+    text-decoration: none;
+    font-weight: initial;
   }
 </style>

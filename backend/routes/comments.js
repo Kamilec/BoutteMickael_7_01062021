@@ -7,10 +7,9 @@ const multer = require('../middleware/multer-config'); //Appel du middleware pou
 
 //Liage des routes aux controllers
 router.post('/create', auth, multer, comments.createComment); // Création d'un commentaire
-router.get('/:id', auth, comments.getOneComment); // Récuparation d'un commentaire via son id
 router.get('/all', auth, comments.getAllComments); // Récuparation des commentaires
+router.get('/:id', auth, comments.getOneComment); // Récuparation d'un commentaire via son id
 router.put('/update/:id', auth, comments.updateComment); // Update d'un commentaire
 router.delete('/delete/:id', auth, comments.deleteComment); // Suppression d'un commentaire
-router.post('/like/:id', comments.likeDislikeComment); //Liker et disliker une publication
 
 module.exports = router;

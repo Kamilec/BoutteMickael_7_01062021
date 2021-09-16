@@ -2,9 +2,9 @@ import { createWebHistory, createRouter } from 'vue-router';
 
 const routes = [
   {
-    name: 'login',
+    name: 'accueil',
     path: '/',
-    component: () => import('../views/Login'),
+    component: () => import('../views/Accueil'),
   },
   {
     name: 'signup',
@@ -12,14 +12,29 @@ const routes = [
     component: () => import('../views/Signup'),
   },
   {
+    name: 'allusers',
+    path: '/allusers',
+    component: () => import('../views/AllUsers'),
+  },
+  {
     name: 'profile',
     path: '/profile',
     component: () => import('../views/Profile'),
   },
   {
-    name: 'aide',
-    path: '/aide',
-    component: () => import('../views/Aide'),
+    name: 'logout',
+    path: '/logout',
+    component: () => import('../views/Logout'),
+  },
+  {
+    name: 'login',
+    path: '/login',
+    component: () => import('../views/Login'),
+  },
+  {
+    name: 'posted',
+    path: '/posted',
+    component: () => import('../views/Posted'),
   },
   {
     name: 'post',

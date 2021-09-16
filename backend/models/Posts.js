@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize, user) => {
         allowNull: false,
         required: true,
       },
-      image: {
+      imageUrl: {
         type: Sequelize.STRING,
         allowNull: false,
         required: true,
