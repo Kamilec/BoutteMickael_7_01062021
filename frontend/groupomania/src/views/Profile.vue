@@ -7,15 +7,17 @@
           id="avatar-User"
           class="avatarUser"
           :src="user.avatar"
-          alt="avatarUser"
+          alt="Avatar du profil utilisateur"
         />
         <span class="check_appear">
           <form
+            action=""
+            method=""
             id="survey"
             enctype="multipart/form-data"
             @submit.prevent="modifyAvatar()"
           >
-            <label for="avatar" class="form-label"></label>
+            <label for="image" class="form-label"></label>
             <input
               type="file"
               class="form__input"
@@ -40,7 +42,14 @@
         <p class="update-User">
           <b>Pseudo:</b> {{ user.pseudo }}
           <span class="check_appear">
-            <input class="update-user" v-model="user.newPseudo" />
+            <label for="update_pseudo" class="form-label"></label>
+            <input
+              type="text"
+              name="update_pseudo"
+              id="update_pseudo"
+              class="update-user"
+              v-model="user.newPseudo"
+            />
             <button
               title="Modifier le pseudo"
               class="card-icon"
@@ -51,7 +60,9 @@
           </span>
         </p>
         <p><b>Role:</b> {{ user.role }}</p>
-        <p class="comment-all-user"> <router-link to="/AllComments"><p>Commentaire(s)</p></router-link> </p>
+        <p class="comment-all-user">
+          <router-link to="/AllComments"><p>Commentaire(s)</p></router-link>
+        </p>
       </div>
     </div>
 

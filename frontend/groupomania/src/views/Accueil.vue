@@ -17,17 +17,16 @@
         <ul>
           <h3>Rien de plus simple désormais :</h3>
           <li>
-            
             <router-link class="title_signup" to="/signup"
               >INSCRIPTION</router-link
             >
           </li>
-          <li> <br>
-          <i class="fas fa-arrows-alt-v icon_home"></i>
+          <li>
+            <br />
+            <i class="fas fa-arrows-alt-v icon_home"></i>
           </li>
           <br />
           <li>
-            
             <router-link class="title_signup" to="/login"
               >CONNEXION</router-link
             >

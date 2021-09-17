@@ -56,15 +56,18 @@
     font-weight: bolder;
   }
 
-  p, figcaption {
+  p,
+  figcaption {
     color: whitesmoke;
   }
 
-  h1, h2, h4  {
+  h1,
+  h2,
+  h4 {
     color: whitesmoke;
   }
 
-  h3{
+  h3 {
     color: whitesmoke;
     font-style: italic;
   }
@@ -226,7 +229,7 @@
     height: 0px;
     font-size: 15px;
   }
-  
+
   @media screen and (max-width: 600px) {
     header,
     .text_logo {
@@ -237,27 +240,6 @@
     }
     .header__nav__logos {
       margin-top: -80px;
-    }
-    #survey {
-      display: inline-grid;
-      position: relative;
-      top: 100px;
-    }
-  }
-
-  @media screen and (min-width: 320px) and (max-width: 434px) {
-    #survey {
-      display: inline-grid;
-      position: relative;
-      top: 1px;
-    }
-  }
-
-  @media screen and (min-width: 435px) and (max-width: 599px) {
-    #survey {
-      display: inline-grid;
-      position: relative;
-      top: -100px;
     }
   }
 </style>

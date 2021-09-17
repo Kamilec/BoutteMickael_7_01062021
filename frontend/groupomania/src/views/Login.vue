@@ -76,10 +76,9 @@
 </script>
 
 <style scoped>
-
-h1 {
-  color: burlywood;
-}
+  h1 {
+    color: burlywood;
+  }
 
   .text_login {
     margin-top: 10px;

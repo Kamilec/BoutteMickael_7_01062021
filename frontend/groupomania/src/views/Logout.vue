@@ -12,7 +12,7 @@
   export default {
     created() {
       setTimeout(() => this.$router.push({ path: '/' }), 1000);
-    }
+    },
   };
 </script>
 

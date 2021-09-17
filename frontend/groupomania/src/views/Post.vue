@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <div class="card card-info"> <h1>Post</h1></div>
+    <div class="card card-info"><h1>Post</h1></div>
     <form
       id="survey"
       enctype="multipart/form-data"
@@ -19,7 +19,6 @@
           />
         </p>
       </div>
-      <br />
       <div>
         <p>
           <label for="content" class="form-label"> <b>Description:</b></label>
@@ -33,10 +32,9 @@
           ></textarea>
         </p>
       </div>
-      <br />
       <div>
         <p>
-          <label for="picture" class="form-label">
+          <label for="image" class="form-label">
             <b>Ajoutez une image: </b></label
           >
           <input
@@ -49,8 +47,12 @@
           />
         </p>
       </div>
-      <br />
-      <button title="Ajouter un nouveau post" type="submit" class="card-icon" @click.prevent="sendPost()">
+      <button
+        title="Ajouter un nouveau post"
+        type="submit"
+        class="card-icon"
+        @click.prevent="sendPost()"
+      >
         <i class="fas fa-plus"></i>
       </button>
     </form>

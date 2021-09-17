@@ -1,5 +1,5 @@
 <template>
-  <div class="card"> <h1>Publication(s)</h1></div>
+  <div class="card"><h1>Publication(s)</h1></div>
   <div class="card-global">
     <div class="card" v-for="(post, id) in post" :key="id">
       <figure>
@@ -8,7 +8,7 @@
             <h3>
               <b class="pseudo-user">
                 <router-link :to="'/profile?userId=' + post.userId">
-                {{ post.user.pseudo }} ( post n° {{ post.id }} ) 
+                  {{ post.user.pseudo }} ( post n° {{ post.id }} )
                 </router-link></b
               >
               <button
@@ -69,7 +69,7 @@
             :id="'imageUrl-User' + post.id"
             class="imageUrl"
             :src="post.imageUrl"
-            alt="imageUrl"
+            alt="Image de la publication"
             @click="goToOnePost(post)"
           />
           <span class="check_appear">

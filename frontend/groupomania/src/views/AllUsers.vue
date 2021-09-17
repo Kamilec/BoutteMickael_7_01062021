@@ -1,7 +1,8 @@
 <template>
+<div class="card"><h1>Infos utilisateur(s)</h1></div>
   <div class="card" v-for="(user, id) in user" :key="id">
     <div class="card card-info">
-      <h4>({{ user.role }}) {{ user.pseudo }} </h4>
+      <h4>({{ user.role }}) {{ user.pseudo }}</h4>
     </div>
     <div class="profil-user">
       <router-link :to="'/profile?userId=' + user.id">
@@ -36,8 +37,7 @@
         .then((res) => {
           this.user = res.data;
         })
-        .catch(() => {
-        });
+        .catch(() => {});
     },
   };
 </script>
@@ -48,8 +48,8 @@
   }
 
   .avatarUser {
-      height: 100px;
-      border-radius: 50%;
+    height: 100px;
+    border-radius: 50%;
   }
 
   .profil-user {
