@@ -1,15 +1,14 @@
 <template>
-  <div class="card-title"><h1>Publication(s)</h1></div>
+  <div class="card"> <h1>Publication(s)</h1></div>
   <div class="card-global">
     <div class="card" v-for="(post, id) in post" :key="id">
       <figure>
         <div class="icon-figcaption">
           <figcaption class="card-title-figcaption">
             <h3>
-              <i class="fas fa-arrow-alt-circle-right show-pseudo"> </i>
               <b class="pseudo-user">
                 <router-link :to="'/profile?userId=' + post.userId">
-                  De: {{ post.user.pseudo }}
+                {{ post.user.pseudo }} ( post n° {{ post.id }} ) 
                 </router-link></b
               >
               <button
@@ -146,7 +145,7 @@
               class="card-icon"
               @click.prevent="sendComments(post.id)"
             >
-              <i class="far fa-share-square"></i>
+              <i class="far fa-comment-dots"></i>
             </button>
           </form>
         </div>

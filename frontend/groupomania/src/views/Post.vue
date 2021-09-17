@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <h2>Post</h2>
+    <div class="card card-info"> <h1>Post</h1></div>
     <form
       id="survey"
       enctype="multipart/form-data"

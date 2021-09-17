@@ -1,8 +1,8 @@
 <template>
   <div class="card">
-    <div class="card card-info"> <h1>Profil utilisateur</h1></div>
+    <div class="card card-info"><h1>Profil utilisateur</h1></div>
     <div class="profil__info">
-      <div class="avatar_user" >
+      <div class="avatar_user">
         <img
           id="avatar-User"
           class="avatarUser"
@@ -17,7 +17,6 @@
           >
             <label for="avatar" class="form-label"></label>
             <input
-            
               type="file"
               class="form__input"
               name="image"
@@ -26,7 +25,6 @@
               v-on:change="previewUpload()"
             />
             <button
-            
               type="submit"
               class="all-buttons"
               name="submitAvatar"
@@ -38,17 +36,12 @@
           </form>
         </span>
       </div>
-      <div class="infoUser" >
+      <div class="infoUser">
         <p class="update-User">
           <b>Pseudo:</b> {{ user.pseudo }}
           <span class="check_appear">
-            <input
-              
-              class="update-user"
-              v-model="user.newPseudo"
-            />
+            <input class="update-user" v-model="user.newPseudo" />
             <button
-             
               title="Modifier le pseudo"
               class="card-icon"
               @click="updateUser(user)"
@@ -58,12 +51,13 @@
           </span>
         </p>
         <p><b>Role:</b> {{ user.role }}</p>
+        <p class="comment-all-user"> <router-link to="/AllComments"><p>Commentaire(s)</p></router-link> </p>
       </div>
     </div>
 
     <div>
       <button
-       v-if="userId == user.id || role === 'admin'"
+        v-if="userId == user.id || role === 'admin'"
         class="all-buttons"
         v-bind="user"
         @click.prevent="deleteUser(user.id)"
@@ -151,8 +145,9 @@
           })
           .then(() => {
             if (this.$route.query.userId == undefined) {
-              this.$router.push('/logout'); 
-            } else { this.$router.push('/posted')
+              this.$router.push('/logout');
+            } else {
+              this.$router.push('/posted');
             }
           });
       },

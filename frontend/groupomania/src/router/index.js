@@ -17,6 +17,11 @@ const routes = [
     component: () => import('../views/AllUsers'),
   },
   {
+    name: 'allcomments',
+    path: '/allcomments',
+    component: () => import('../views/AllComments'),
+  },
+  {
     name: 'profile',
     path: '/profile',
     component: () => import('../views/Profile'),

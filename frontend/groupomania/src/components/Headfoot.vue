@@ -35,6 +35,14 @@
         <i class="fas fa-chalkboard-teacher header__logo"></i>
       </router-link>
 
+       <router-link
+        title="Panneau de tous les commentaires"
+        class="header__nav__logos"
+        to="/allcomments"
+      >
+        <i class="fas fa-comment-dots header__logo"></i>
+      </router-link>
+
       <router-link title="Deconnexion" class="header__nav__logos" to="/logout">
         <i class="fas fa-door-open header__logo"></i>
       </router-link>
