@@ -11,14 +11,14 @@
         />
         <span class="check_appear">
           <form
-            action=""
-            method=""
+            aria-label="Permet la modification de l'avatar utilisateur"
             id="survey"
             enctype="multipart/form-data"
             @submit.prevent="modifyAvatar()"
           >
             <label for="image" class="form-label"></label>
             <input
+              aria-label="Changement de l'avatar utilisateur"
               type="file"
               class="form__input"
               name="image"
@@ -27,6 +27,7 @@
               v-on:change="previewUpload()"
             />
             <button
+              aria-label="Bouton pour changer l'avatar de l'utilisateur"
               type="submit"
               class="all-buttons"
               name="submitAvatar"
@@ -42,8 +43,13 @@
         <p class="update-User">
           <b>Pseudo:</b> {{ user.pseudo }}
           <span class="check_appear">
-            <label for="update_pseudo" class="form-label"></label>
+            <label
+              aria-label="Changement de pseudo"
+              for="update_pseudo"
+              class="form-label"
+            ></label>
             <input
+              aria-label="Changement de pseudo"
               type="text"
               name="update_pseudo"
               id="update_pseudo"
@@ -51,6 +57,7 @@
               v-model="user.newPseudo"
             />
             <button
+              aria-label="Modifier le pseudo"
               title="Modifier le pseudo"
               class="card-icon"
               @click="updateUser(user)"
@@ -68,6 +75,7 @@
 
     <div>
       <button
+        aria-label="Suppression de l'utilisateur"
         v-if="userId == user.id || role === 'admin'"
         class="all-buttons"
         v-bind="user"
