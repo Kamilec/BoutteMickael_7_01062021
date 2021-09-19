@@ -8,7 +8,7 @@
           id="avatar-User"
           class="avatarUser"
           :src="user.avatar"
-          alt="Avatar du profil utilisateur"
+          alt="Avatar de l'utilisateur"
         />
         <span class="check_appear">
           <form id="survey" enctype="multipart/form-data" @submit.prevent="modifyAvatar()">
