@@ -5,9 +5,9 @@
       <i class="far fa-hand-point-down header__logo"></i>
     </div>
     <div class="authentification__form">
-      <form class="register__form" method="post" @submit.prevent="signup()">
+      <form id="survey" class="register__form" method="post" @submit.prevent="signup()">
         <div>
-          <label class="register__label" for="pseudo"></label>
+          <label class="register__label" for="pseudo">
           <input
             class="form__row__input"
             v-model="pseudo"
@@ -16,10 +16,10 @@
             id="pseudo"
             placeholder="pseudo"
           /><br />
-          <span class="error" v-show="!pseudo">Veuillez saisir un pseudo</span>
+          <span class="error" v-show="!pseudo">Veuillez saisir un pseudo</span></label>
         </div>
         <div>
-          <label class="register__label" for="email"></label>
+          <label class="register__label" for="email">
           <input
             class="form__row__input"
             type="email"
@@ -29,10 +29,10 @@
             v-model="email"
             placeholder="email"
           /><br />
-          <span class="error" v-show="!email">Veuillez saisir votre email</span>
+          <span class="error" v-show="!email">Veuillez saisir votre email</span></label>
         </div>
         <div>
-          <label class="register__label" for="password"></label>
+          <label class="register__label" for="password">
           <input
             class="form__row__input"
             type="password"
@@ -44,7 +44,7 @@
           /><br />
           <span class="error" v-show="!password"
             >Veuillez saisir votre password</span
-          >
+          ></label>
         </div>
         <div class="register__button">
           <button class="all-buttons" type="submit">

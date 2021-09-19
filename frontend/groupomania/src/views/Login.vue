@@ -3,9 +3,9 @@
     <h1>CONNECTEZ-VOUS</h1>
     <i class="far fa-hand-point-down header__logo"></i>
     <div class="authentification__form">
-      <form class="login__form" v-on:submit.prevent="login()" method="post">
+      <form id="survey" class="login__form" v-on:submit.prevent="login()" method="post">
         <div>
-          <label class="login__label" for="email"></label>
+          <label class="login__label" for="email">
           <input
             class="form__row__input"
             v-model="email"
@@ -15,10 +15,10 @@
             placeholder="email"
             autocomplete="username"
           /><br />
-          <span class="error" v-show="!email">Veuillez saisir votre email</span>
+          <span class="error" v-show="!email">Veuillez saisir votre email</span> </label>
         </div>
         <div>
-          <label class="login__label" for="password"></label>
+          <label class="login__label" for="password">
           <input
             class="form__row__input"
             v-model="password"
@@ -30,7 +30,7 @@
           /><br />
           <span class="error" v-show="!password"
             >Veuillez saisir votre password</span
-          >
+          > </label>
         </div>
         <div class="login__button">
           <button class="all-buttons" type="submit" @click.prevent="login">

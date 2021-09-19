@@ -131,9 +131,8 @@
   }
 
   .all-buttons {
-    display: inline-block;
+    display: block;
     color: #252537;
-    width: 190px;
     height: 40px;
     padding: 0 20px;
     background: #fff;
@@ -226,8 +225,6 @@
     color: black;
     position: absolute;
     bottom: 0;
-    height: 0px;
-    font-size: 15px;
   }
 
   @media screen and (max-width: 600px) {
@@ -242,4 +239,18 @@
       margin-top: -80px;
     }
   }
+
+/*   @media screen and (min-width: 600px) {
+   #survey {
+      bottom: 0;
+    }
+}
+
+  @media screen and (min-width: 441px) and (max-width: 599px) {
+   #survey {
+      bottom: 0;
+    }
+} */
+
+
 </style>

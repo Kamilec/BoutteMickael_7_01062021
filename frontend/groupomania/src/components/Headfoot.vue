@@ -30,7 +30,7 @@
       <router-link
         title="Panneau des publications"
         class="header__nav__logos"
-        to="/posted"
+        to="/allposts"
       >
         <i class="fas fa-chalkboard-teacher header__logo"></i>
       </router-link>
@@ -56,14 +56,6 @@
 <script>
   export default {
     name: 'Headfoot',
-
-    /*     data() {
-      return {
-        user: '',
-        userId: localStorage.getItem('userId'),
-        token: localStorage.getItem('token'),
-      };
-    }, */
   };
 </script>
 

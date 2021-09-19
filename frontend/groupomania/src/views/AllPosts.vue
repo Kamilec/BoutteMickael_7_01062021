@@ -24,19 +24,27 @@
               <p>
                 Titre : {{ post.title }}
                 <span class="check_appear">
-                  <input
-                    class="update-post"
-                    v-if="userId == post.userId || role === 'admin'"
-                    v-model="post.newTitle"
-                  />
-                  <button
-                    title="Modifier le titre"
-                    class="card-icon"
-                    v-if="userId == post.userId || role === 'admin'"
-                    @click="updatePost(post)"
-                  >
-                    <i class="far fa-edit"></i>
-                  </button>
+                  <label for="update-title">
+                    <input
+                      id="update-title"
+                      name="update-title"
+                      class="update-post"
+                      v-if="userId == post.userId || role === 'admin'"
+                      v-model="post.newTitle"
+                    />
+                    <button
+                      title="Modifier le titre"
+                      class="card-icon"
+                      v-if="userId == post.userId || role === 'admin'"
+                      @click="updatePost(post)"
+                    >
+                      <i class="far fa-edit"
+                        ><p hidden>
+                          Modification titre
+                        </p></i
+                      >
+                    </button>
+                  </label>
                 </span>
               </p>
             </div>
@@ -45,19 +53,27 @@
               <p>
                 Description : {{ post.content }}
                 <span class="check_appear">
-                  <input
-                    class="update-post"
-                    v-if="userId == post.userId || role === 'admin'"
-                    v-model="post.newContent"
-                  />
-                  <button
-                    title="Modifier la description"
-                    class="card-icon"
-                    v-if="userId == post.userId || role === 'admin'"
-                    @click="updatePost(post)"
+                  <label for="update-content">
+                    <input
+                      class="update-content"
+                      name="update-content"
+                      id="update-content"
+                      v-if="userId == post.userId || role === 'admin'"
+                      v-model="post.newContent"
+                    />
+                    <button
+                      title="Modifier la description"
+                      class="card-icon"
+                      v-if="userId == post.userId || role === 'admin'"
+                      @click="updatePost(post)"
+                    >
+                      <i class="far fa-edit"
+                        ><p hidden>
+                          Modification description
+                        </p></i
+                      >
+                    </button></label
                   >
-                    <i class="far fa-edit"></i>
-                  </button>
                 </span>
               </p>
             </div>
@@ -78,28 +94,33 @@
               enctype="multipart/form-data"
               @submit.prevent="modifyImagePost(post.id)"
             >
-              <label for="gif" class="form-label"></label>
-              <input
-                v-if="userId == post.userId || role === 'admin'"
-                type="file"
-                class="update-post"
-                name="gif"
-                id="gif"
-                :ref="'gif' + post.id"
-                v-on:change="previewUpload(post.id)"
-              />
+              <label for="gif" class="form-label">
+                <input
+                  v-if="userId == post.userId || role === 'admin'"
+                  type="file"
+                  class="update-post"
+                  name="gif"
+                  id="gif"
+                  :ref="'gif' + post.id"
+                  v-on:change="previewUpload(post.id)"
+                />
 
-              <button
-                v-if="userId == post.userId || role === 'admin'"
-                title="Update gif"
-                type="submit"
-                class="card-icon"
-                name="submitGif"
-                id="submitGif"
-                @click.prevent="modifyImagePost(post.id)"
+                <button
+                  v-if="userId == post.userId || role === 'admin'"
+                  title="Update gif"
+                  type="submit"
+                  class="card-icon"
+                  name="submitGif"
+                  id="submitGif"
+                  @click.prevent="modifyImagePost(post.id)"
+                >
+                  <i class="far fa-image other__page__logo">
+                    <p hidden>
+                      Modificaiton gif
+                    </p></i
+                  >
+                </button></label
               >
-                <i class="far fa-image other__page__logo"></i>
-              </button>
             </form>
           </span>
         </div>
@@ -108,33 +129,44 @@
             {{ comment.user.pseudo }} <i class="fas fa-caret-right"></i>
             {{ comment.comment }}
             <span class="check_appear">
-              <input
-                class="update-comment"
-                v-if="userId == comment.userId || role === 'admin'"
-                v-model="comment.newComment"
-              />
-              <button
-                v-if="userId == comment.userId || role === 'admin'"
-                title="Modifier le commentaire"
-                class="card-icon"
-                @click="updateCommentUser(comment.id, comment.newComment)"
+              <label for="update-comment">
+                <input
+                  id="update-comment"
+                  name="update-comment"
+                  class="update-comment"
+                  v-if="userId == comment.userId || role === 'admin'"
+                  v-model="comment.newComment"
+                />
+                <button
+                  v-if="userId == comment.userId || role === 'admin'"
+                  title="Modifier le commentaire"
+                  class="card-icon"
+                  @click="updateCommentUser(comment.id, comment.newComment)"
+                >
+                  <i class="far fa-edit"
+                    ><p hidden>Modification du commentaire</p></i
+                  >
+                </button>
+                <button
+                  title="Supprimer le commentaire"
+                  class="card-icon"
+                  v-if="userId == comment.userId || role === 'admin'"
+                  @click="deleteCommentUser(comment.id)"
+                >
+                  <i class="far fa-trash-alt"
+                    ><p hidden>Suppression du commentaire</p></i
+                  >
+                </button></label
               >
-                <i class="far fa-edit"></i>
-              </button>
-              <button
-                title="Supprimer le commentaire"
-                class="card-icon"
-                v-if="userId == comment.userId || role === 'admin'"
-                @click="deleteCommentUser(comment.id)"
-              >
-                <i class="far fa-trash-alt"></i>
-              </button>
             </span>
           </p>
         </div>
         <div>
-          <form id="survey" ref="clear" @submit.prevent="sendComments(post.id)">
+          <form ref="clear" @submit.prevent="sendComments(post.id)">
+            <label for="send-comment">
             <input
+              name="send-comment"
+              id="send-comment"
               type="text"
               placeholder="Commentaire ..."
               v-model="comments[post.id]"
@@ -145,8 +177,8 @@
               class="card-icon"
               @click.prevent="sendComments(post.id)"
             >
-              <i class="far fa-comment-dots"></i>
-            </button>
+              <i class="far fa-comment-dots"><p hidden>Poster un commentaire</p></i>
+            </button></label>
           </form>
         </div>
       </figure>
@@ -157,7 +189,7 @@
 <script>
   import axios from 'axios';
   export default {
-    name: 'Posted',
+    name: 'AllPosts',
 
     data() {
       return {
@@ -286,6 +318,7 @@
   .card-global {
     flex-direction: column-reverse;
     display: flex;
+    margin-bottom: 25px;
   }
 
   .show-pseudo {

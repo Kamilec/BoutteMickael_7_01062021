@@ -4,68 +4,63 @@
     <div class="profil__info">
       <div class="avatar_user">
         <img
+          aria-label="Photo ou avatar de l'utilisateur"
           id="avatar-User"
           class="avatarUser"
           :src="user.avatar"
           alt="Avatar du profil utilisateur"
         />
         <span class="check_appear">
-          <form
-            aria-label="Permet la modification de l'avatar utilisateur"
-            id="survey"
-            enctype="multipart/form-data"
-            @submit.prevent="modifyAvatar()"
-          >
-            <label for="image" class="form-label"></label>
-            <input
-              aria-label="Changement de l'avatar utilisateur"
-              type="file"
-              class="form__input"
-              name="image"
-              id="image"
-              ref="image"
-              v-on:change="previewUpload()"
-            />
-            <button
-              aria-label="Bouton pour changer l'avatar de l'utilisateur"
-              type="submit"
-              class="all-buttons"
-              name="submitAvatar"
-              id="submitAvatar"
-              @click.prevent="modifyAvatar"
+          <form id="survey" enctype="multipart/form-data" @submit.prevent="modifyAvatar()">
+            <label for="image" class="form-label">
+              <input
+                aria-label="Changement de l'avatar utilisateur"
+                type="file"
+                class="form__input"
+                name="image"
+                id="image"
+                ref="image"
+                v-on:change="previewUpload()"
+              />
+              <button
+                aria-label="Bouton pour changer l'avatar de l'utilisateur"
+                type="submit"
+                class="all-buttons"
+                name="submitAvatar"
+                id="submitAvatar"
+                @click.prevent="modifyAvatar"
+              >
+                <i class="far fa-image other__page__logo"> Modifier</i>
+              </button></label
             >
-              <i class="far fa-image other__page__logo"> Modifier</i>
-            </button>
           </form>
         </span>
       </div>
       <div class="infoUser">
-        <p class="update-User">
-          <b>Pseudo:</b> {{ user.pseudo }}
+        <div class="update-User">
+          <p><b>Pseudo:</b> {{ user.pseudo }}</p>
           <span class="check_appear">
-            <label
-              aria-label="Changement de pseudo"
-              for="update_pseudo"
-              class="form-label"
-            ></label>
-            <input
-              aria-label="Changement de pseudo"
-              type="text"
-              name="update_pseudo"
-              id="update_pseudo"
-              class="update-user"
-              v-model="user.newPseudo"
-            />
-            <button
-              aria-label="Modifier le pseudo"
-              title="Modifier le pseudo"
-              class="card-icon"
-              @click="updateUser(user)"
-            >
-              <i class="far fa-edit"></i>
-            </button>
+            <form>
+              <label for="update_pseudo" class="form-label">
+                <input
+                  aria-label="Changement de pseudo"
+                  type="text"
+                  name="update_pseudo"
+                  id="update_pseudo"
+                  placeholder="Modifier son pseudo ..."
+                  class="update-user"
+                  v-model="user.newPseudo"/>
+                <button
+                  aria-label="Modifier le pseudo"
+                  title="Modifier le pseudo"
+                  class="card-icon"
+                  @click="updateUser(user)"
+                >
+                  <i class="far fa-edit"></i><p hidden>Modification pseudo</p></button
+              ></label>
+            </form>
           </span>
-        </p>
+        </div>
         <p><b>Role:</b> {{ user.role }}</p>
         <p class="comment-all-user">
           <router-link to="/AllComments"><p>Commentaire(s)</p></router-link>
@@ -166,7 +161,7 @@
             if (this.$route.query.userId == undefined) {
               this.$router.push('/logout');
             } else {
-              this.$router.push('/posted');
+              this.$router.push('/allposts');
             }
           });
       },
@@ -208,4 +203,10 @@
     text-decoration: none;
     font-weight: initial;
   }
+
+  @media screen and (min-width: 320px) and (max-width: 440px) {
+   #survey {
+      bottom: 0;
+    }
+}
 </style>

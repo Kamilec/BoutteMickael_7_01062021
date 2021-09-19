@@ -90,7 +90,7 @@
           .post('http://localhost:3000/post/create', formData, {
             headers: { Authorization: 'Bearer ' + localStorage.token },
           })
-          .then(() => this.$router.push({ path: 'posted' }));
+          .then(() => this.$router.push({ path: 'allposts' }));
       },
     },
   };

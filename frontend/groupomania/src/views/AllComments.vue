@@ -3,7 +3,7 @@
     <div class="card card-info"><h1>Le temple aux commentaires :</h1></div>
     <div v-for="(comment, id) in user" :key="id">
       <p>
-        <router-link :to="'/posted?postId=' + id">
+        <router-link :to="'/allposts?postId=' + id">
           Post n°{{ comment.postId }}</router-link
         >
         <br />
