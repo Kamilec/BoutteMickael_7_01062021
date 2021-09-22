@@ -1,5 +1,5 @@
 <template>
-  <div class="card"><h1>Publication(s)</h1></div>
+  <div class="card"><img class="logoGM logoGMR" src="../assets/logoGMR.png" alt="Logo Groupomania" /><h1>Publication(s)</h1></div>
   <div class="card-global">
     <div class="card" v-for="(post, id) in post" :key="id">
       <figure>
@@ -164,21 +164,24 @@
         <div>
           <form ref="clear" @submit.prevent="sendComments(post.id)">
             <label for="send-comment">
-            <input
-              name="send-comment"
-              id="send-comment"
-              type="text"
-              placeholder="Commentaire ..."
-              v-model="comments[post.id]"
-            />
-            <button
-              title="Poster un commentaire"
-              type="submit"
-              class="card-icon"
-              @click.prevent="sendComments(post.id)"
+              <input
+                name="send-comment"
+                id="send-comment"
+                type="text"
+                placeholder="Commentaire ..."
+                v-model="comments[post.id]"
+              />
+              <button
+                title="Poster un commentaire"
+                type="submit"
+                class="card-icon"
+                @click.prevent="sendComments(post.id)"
+              >
+                <i class="far fa-comment-dots"
+                  ><p hidden>Poster un commentaire</p></i
+                >
+              </button></label
             >
-              <i class="far fa-comment-dots"><p hidden>Poster un commentaire</p></i>
-            </button></label>
           </form>
         </div>
       </figure>

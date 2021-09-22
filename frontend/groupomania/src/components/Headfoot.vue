@@ -7,7 +7,11 @@
         <i class="fas fa-house-user header__logo"></i>
       </router-link>
 
-      <router-link title="Page de tous les utilisateurs" class="header__nav__logos" to="/allusers">
+      <router-link
+        title="Page de tous les utilisateurs"
+        class="header__nav__logos"
+        to="/allusers"
+      >
         <i class="fas fa-users header__logo"></i>
       </router-link>
 
@@ -35,7 +39,7 @@
         <i class="fas fa-chalkboard-teacher header__logo"></i>
       </router-link>
 
-       <router-link
+      <router-link
         title="Panneau de tous les commentaires"
         class="header__nav__logos"
         to="/allcomments"
@@ -49,7 +53,13 @@
     </nav>
   </header>
   <footer>
-    © 2021 Copyright:<a href="https://groupomania.com/"> Groupomania.com</a>
+    © 2021 Copyright:<a href="https://groupomania.com/">
+      Groupomania.com
+      <img
+        class="PetitLogo"
+        src="../assets/petitLogoGm.png"
+        alt="Logo Groupomania"
+    /></a>
   </footer>
 </template>
 
@@ -62,5 +72,10 @@
 <style scoped>
   a {
     color: black;
+  }
+
+  .PetitLogo {
+    height: 27px;
+    margin-bottom: -4px;
   }
 </style>

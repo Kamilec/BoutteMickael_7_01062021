@@ -1,12 +1,16 @@
 <template>
   <div class="card">
     <h1 class="title__welcome">
-      Bienvenue sur le réseau social <strong>GROUPOMANIA</strong>
+      Bienvenue sur le réseau social <br />
+      <img
+        class="logoGMS"
+        src="../assets/logoGMHB.png"
+        alt="Logo Groupomania"
+      />
     </h1>
     <div>
       <div>
         <h2>
-          <i class="fas fa-exclamation-triangle"></i> <br />
           Avant toute chose, information très importante, sachez qu'à tout
           moment, un administrateur peut modifier ou supprimer un commentaire et
           / ou une publication, si ceux-ci ne sont pas en adéquation avec notre
@@ -51,6 +55,12 @@
   .icon_home {
     font-size: 25px;
     color: white;
+  }
+
+  .logoGMS {
+    height: 300px;
+    margin-bottom: -90px;
+    margin-top: -80px;
   }
 
   .title_signup,

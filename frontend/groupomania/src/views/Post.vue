@@ -1,5 +1,6 @@
 <template>
   <div class="card">
+    <img class="logoGM logoGMR" src="../assets/logoGMR.png" alt="Logo Groupomania" />
     <div class="card card-info"><h1>Post</h1></div>
     <form
       id="survey"

@@ -6,8 +6,8 @@ const path = require('path'); //Accès aux chemins des fichiers
 // Modules de sécurité
 const helmet = require('helmet'); // Aide à sécuriser les applications Express en définissant divers en-têtes HTTP
 require('dotenv').config();//Module indépendant qui charge les variables d'environnement
-const hpp = require('hpp');
-const cors = require('cors');
+const hpp = require('hpp'); // Protection contre les attaques des paramètres HTTP
+const cors = require('cors'); // Middleware CORS - Ajout de HEADERS à l'objet "response"
 
 // Importation des routes
 const usersRoutes = require('./routes/users'); //Importation du routeur pour les utilisateurs
@@ -43,8 +43,8 @@ app.use('/images', express.static(path.join(__dirname, 'images'))); //Middleware
 
 //Connexion à la base de données MySql   
 const db = require('./models');
-db.sequelize.sync();  
-//db.sequelize.sync({ force: true });  
+//db.sequelize.sync();  
+db.sequelize.sync({ force: true });
 
 // Middleware qui va permettre la transimission des requêtes vers ces url aux routes correspondantes
 app.use('/user', usersRoutes);

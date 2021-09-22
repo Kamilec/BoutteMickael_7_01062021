@@ -1,5 +1,6 @@
 <template>
   <div class="card">
+    <img class="logoGM logoGMR" src="../assets/logoGMR.png" alt="Logo Groupomania" />
     <div class="card card-info"><h1>Le temple aux commentaires :</h1></div>
     <div v-for="(comment, id) in user" :key="id">
       <p>

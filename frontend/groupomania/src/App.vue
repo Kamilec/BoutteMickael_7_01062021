@@ -72,10 +72,26 @@
     font-style: italic;
   }
 
+  .PetitlogoGM {
+    height: 25px;
+    margin-bottom: -4px;
+  }
+
   .subtitle__h1 {
     font-size: 12px;
     margin-top: -25px;
     margin-bottom: 40px;
+  }
+
+  .logoGMR {
+    margin-bottom: -110px;
+    margin-top: -100px;
+  }
+
+  .logoGMS {
+    height: 350px;
+    margin-bottom: -140px;
+    margin-top: -130px;
   }
 
   .logoGM,
@@ -240,7 +256,7 @@
     }
   }
 
-/*   @media screen and (min-width: 600px) {
+  /*   @media screen and (min-width: 600px) {
    #survey {
       bottom: 0;
     }
@@ -251,6 +267,4 @@
       bottom: 0;
     }
 } */
-
-
 </style>

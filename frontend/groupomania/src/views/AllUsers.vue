@@ -1,5 +1,5 @@
 <template>
-<div class="card"><h1>Infos utilisateur(s)</h1></div>
+<div class="card"><img class="logoGM logoGMR" src="../assets/logoGMR.png" alt="Logo Groupomania" /><h1>Infos utilisateur(s)</h1></div>
   <div class="card" v-for="(user, id) in user" :key="id">
     <div class="card card-info">
       <h4>({{ user.role }}) {{ user.pseudo }}</h4>
